@@ -3,7 +3,7 @@ module reconciler.io/dies/diegen
 go 1.25.0
 
 require (
-	k8s.io/apimachinery v0.35.0
+	k8s.io/apimachinery v0.36.0-alpha.0
 	k8s.io/utils v0.0.0-20251002143259-bc988d571ff4
 	sigs.k8s.io/controller-tools v0.14.0
 )
@@ -12,6 +12,7 @@ require (
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	golang.org/x/mod v0.29.0 // indirect
+	golang.org/x/net v0.47.0 // indirect
 	golang.org/x/sync v0.18.0 // indirect
 	golang.org/x/sys v0.38.0 // indirect
 	golang.org/x/tools v0.38.0 // indirect

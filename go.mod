@@ -6,11 +6,11 @@ require (
 	github.com/evanphx/json-patch/v5 v5.9.11
 	github.com/google/go-cmp v0.7.0
 	gomodules.xyz/jsonpatch/v3 v3.0.1
-	k8s.io/api v0.35.0
-	k8s.io/apiextensions-apiserver v0.35.0
-	k8s.io/apimachinery v0.35.0
-	k8s.io/client-go v0.35.0
-	k8s.io/kube-aggregator v0.35.0
+	k8s.io/api v0.36.0-alpha.0
+	k8s.io/apiextensions-apiserver v0.36.0-alpha.0
+	k8s.io/apimachinery v0.36.0-alpha.0
+	k8s.io/client-go v0.36.0-alpha.0
+	k8s.io/kube-aggregator v0.36.0-alpha.0
 	k8s.io/utils v0.0.0-20251002143259-bc988d571ff4
 	sigs.k8s.io/yaml v1.6.0
 )
