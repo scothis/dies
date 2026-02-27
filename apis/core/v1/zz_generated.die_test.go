@@ -521,6 +521,24 @@ func TestVolumeMountStatusDie_MissingMethods(t *testingx.T) {
 	}
 }
 
+func TestVolumeStatusDie_MissingMethods(t *testingx.T) {
+	die := VolumeStatusBlank
+	ignore := []string{}
+	diff := testing.DieFieldDiff(die).Delete(ignore...)
+	if diff.Len() != 0 {
+		t.Errorf("found missing fields for VolumeStatusDie: %s", diff.List())
+	}
+}
+
+func TestImageVolumeStatusDie_MissingMethods(t *testingx.T) {
+	die := ImageVolumeStatusBlank
+	ignore := []string{}
+	diff := testing.DieFieldDiff(die).Delete(ignore...)
+	if diff.Len() != 0 {
+		t.Errorf("found missing fields for ImageVolumeStatusDie: %s", diff.List())
+	}
+}
+
 func TestEndpointsDie_MissingMethods(t *testingx.T) {
 	die := EndpointsBlank
 	ignore := []string{"TypeMeta", "ObjectMeta"}
@@ -1688,6 +1706,15 @@ func TestEphemeralVolumeSourceDie_MissingMethods(t *testingx.T) {
 	diff := testing.DieFieldDiff(die).Delete(ignore...)
 	if diff.Len() != 0 {
 		t.Errorf("found missing fields for EphemeralVolumeSourceDie: %s", diff.List())
+	}
+}
+
+func TestImageVolumeSourceDie_MissingMethods(t *testingx.T) {
+	die := ImageVolumeSourceBlank
+	ignore := []string{}
+	diff := testing.DieFieldDiff(die).Delete(ignore...)
+	if diff.Len() != 0 {
+		t.Errorf("found missing fields for ImageVolumeSourceDie: %s", diff.List())
 	}
 }
 

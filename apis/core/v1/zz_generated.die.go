@@ -16934,6 +16934,19 @@ func (d *VolumeMountStatusDie) DiePatch(patchType types.PatchType) ([]byte, erro
 	return patch.Create(d.seal, d.r, patchType)
 }
 
+// VolumeStatusDie mutates VolumeStatus as a die.
+//
+// volumeStatus represents volume-type-specific status about the mounted
+//
+// volume.
+func (d *VolumeMountStatusDie) VolumeStatusDie(fn func(d *VolumeStatusDie)) *VolumeMountStatusDie {
+	return d.DieStamp(func(r *corev1.VolumeMountStatus) {
+		d := VolumeStatusBlank.DieImmutable(false).DieFeed(r.VolumeStatus)
+		fn(d)
+		r.VolumeStatus = d.DieRelease()
+	})
+}
+
 // Name corresponds to the name of the original VolumeMount.
 func (d *VolumeMountStatusDie) Name(v string) *VolumeMountStatusDie {
 	return d.DieStamp(func(r *corev1.VolumeMountStatus) {
@@ -16963,6 +16976,536 @@ func (d *VolumeMountStatusDie) ReadOnly(v bool) *VolumeMountStatusDie {
 func (d *VolumeMountStatusDie) RecursiveReadOnly(v *corev1.RecursiveReadOnlyMode) *VolumeMountStatusDie {
 	return d.DieStamp(func(r *corev1.VolumeMountStatus) {
 		r.RecursiveReadOnly = v
+	})
+}
+
+// volumeStatus represents volume-type-specific status about the mounted
+//
+// volume.
+func (d *VolumeMountStatusDie) VolumeStatus(v corev1.VolumeStatus) *VolumeMountStatusDie {
+	return d.DieStamp(func(r *corev1.VolumeMountStatus) {
+		r.VolumeStatus = v
+	})
+}
+
+var VolumeStatusBlank = (&VolumeStatusDie{}).DieFeed(corev1.VolumeStatus{})
+
+type VolumeStatusDie struct {
+	mutable bool
+	r       corev1.VolumeStatus
+	seal    corev1.VolumeStatus
+}
+
+// DieImmutable returns a new die for the current die's state that is either mutable (`false`) or immutable (`true`).
+func (d *VolumeStatusDie) DieImmutable(immutable bool) *VolumeStatusDie {
+	if d.mutable == !immutable {
+		return d
+	}
+	d = d.DeepCopy()
+	d.mutable = !immutable
+	return d
+}
+
+// DieFeed returns a new die with the provided resource.
+func (d *VolumeStatusDie) DieFeed(r corev1.VolumeStatus) *VolumeStatusDie {
+	if d.mutable {
+		d.r = r
+		return d
+	}
+	return &VolumeStatusDie{
+		mutable: d.mutable,
+		r:       r,
+		seal:    d.seal,
+	}
+}
+
+// DieFeedPtr returns a new die with the provided resource pointer. If the resource is nil, the empty value is used instead.
+func (d *VolumeStatusDie) DieFeedPtr(r *corev1.VolumeStatus) *VolumeStatusDie {
+	if r == nil {
+		r = &corev1.VolumeStatus{}
+	}
+	return d.DieFeed(*r)
+}
+
+// DieFeedDuck returns a new die with the provided value converted into the underlying type. Panics on error.
+func (d *VolumeStatusDie) DieFeedDuck(v any) *VolumeStatusDie {
+	data, err := json.Marshal(v)
+	if err != nil {
+		panic(err)
+	}
+	return d.DieFeedJSON(data)
+}
+
+// DieFeedJSON returns a new die with the provided JSON. Panics on error.
+func (d *VolumeStatusDie) DieFeedJSON(j []byte) *VolumeStatusDie {
+	r := corev1.VolumeStatus{}
+	if err := json.Unmarshal(j, &r); err != nil {
+		panic(err)
+	}
+	return d.DieFeed(r)
+}
+
+// DieFeedYAML returns a new die with the provided YAML. Panics on error.
+func (d *VolumeStatusDie) DieFeedYAML(y []byte) *VolumeStatusDie {
+	r := corev1.VolumeStatus{}
+	if err := yaml.Unmarshal(y, &r); err != nil {
+		panic(err)
+	}
+	return d.DieFeed(r)
+}
+
+// DieFeedYAMLFile returns a new die loading YAML from a file path. Panics on error.
+func (d *VolumeStatusDie) DieFeedYAMLFile(name string) *VolumeStatusDie {
+	y, err := osx.ReadFile(name)
+	if err != nil {
+		panic(err)
+	}
+	return d.DieFeedYAML(y)
+}
+
+// DieFeedRawExtension returns the resource managed by the die as an raw extension. Panics on error.
+func (d *VolumeStatusDie) DieFeedRawExtension(raw runtime.RawExtension) *VolumeStatusDie {
+	j, err := json.Marshal(raw)
+	if err != nil {
+		panic(err)
+	}
+	return d.DieFeedJSON(j)
+}
+
+// DieRelease returns the resource managed by the die.
+func (d *VolumeStatusDie) DieRelease() corev1.VolumeStatus {
+	if d.mutable {
+		return d.r
+	}
+	return *d.r.DeepCopy()
+}
+
+// DieReleasePtr returns a pointer to the resource managed by the die.
+func (d *VolumeStatusDie) DieReleasePtr() *corev1.VolumeStatus {
+	r := d.DieRelease()
+	return &r
+}
+
+// DieReleaseDuck releases the value into the passed value and returns the same. Panics on error.
+func (d *VolumeStatusDie) DieReleaseDuck(v any) any {
+	data := d.DieReleaseJSON()
+	if err := json.Unmarshal(data, v); err != nil {
+		panic(err)
+	}
+	return v
+}
+
+// DieReleaseJSON returns the resource managed by the die as JSON. Panics on error.
+func (d *VolumeStatusDie) DieReleaseJSON() []byte {
+	r := d.DieReleasePtr()
+	j, err := json.Marshal(r)
+	if err != nil {
+		panic(err)
+	}
+	return j
+}
+
+// DieReleaseYAML returns the resource managed by the die as YAML. Panics on error.
+func (d *VolumeStatusDie) DieReleaseYAML() []byte {
+	r := d.DieReleasePtr()
+	y, err := yaml.Marshal(r)
+	if err != nil {
+		panic(err)
+	}
+	return y
+}
+
+// DieReleaseRawExtension returns the resource managed by the die as an raw extension. Panics on error.
+func (d *VolumeStatusDie) DieReleaseRawExtension() runtime.RawExtension {
+	j := d.DieReleaseJSON()
+	raw := runtime.RawExtension{}
+	if err := json.Unmarshal(j, &raw); err != nil {
+		panic(err)
+	}
+	return raw
+}
+
+// DieStamp returns a new die with the resource passed to the callback function. The resource is mutable.
+func (d *VolumeStatusDie) DieStamp(fn func(r *corev1.VolumeStatus)) *VolumeStatusDie {
+	r := d.DieRelease()
+	fn(&r)
+	return d.DieFeed(r)
+}
+
+// Experimental: DieStampAt uses a JSON path (http://goessner.net/articles/JsonPath/) expression to stamp portions of the resource. The callback is invoked with each JSON path match. Panics if the callback function does not accept a single argument of the same type or a pointer to that type as found on the resource at the target location.
+//
+// Future iterations will improve type coercion from the resource to the callback argument.
+func (d *VolumeStatusDie) DieStampAt(jp string, fn interface{}) *VolumeStatusDie {
+	return d.DieStamp(func(r *corev1.VolumeStatus) {
+		if ni := reflectx.ValueOf(fn).Type().NumIn(); ni != 1 {
+			panic(fmtx.Errorf("callback function must have 1 input parameters, found %d", ni))
+		}
+		if no := reflectx.ValueOf(fn).Type().NumOut(); no != 0 {
+			panic(fmtx.Errorf("callback function must have 0 output parameters, found %d", no))
+		}
+
+		cp := jsonpath.New("")
+		if err := cp.Parse(fmtx.Sprintf("{%s}", jp)); err != nil {
+			panic(err)
+		}
+		cr, err := cp.FindResults(r)
+		if err != nil {
+			// errors are expected if a path is not found
+			return
+		}
+		for _, cv := range cr[0] {
+			arg0t := reflectx.ValueOf(fn).Type().In(0)
+
+			var args []reflectx.Value
+			if cv.Type().AssignableTo(arg0t) {
+				args = []reflectx.Value{cv}
+			} else if cv.CanAddr() && cv.Addr().Type().AssignableTo(arg0t) {
+				args = []reflectx.Value{cv.Addr()}
+			} else {
+				panic(fmtx.Errorf("callback function must accept value of type %q, found type %q", cv.Type(), arg0t))
+			}
+
+			reflectx.ValueOf(fn).Call(args)
+		}
+	})
+}
+
+// DieWith returns a new die after passing the current die to the callback function. The passed die is mutable.
+func (d *VolumeStatusDie) DieWith(fns ...func(d *VolumeStatusDie)) *VolumeStatusDie {
+	nd := VolumeStatusBlank.DieFeed(d.DieRelease()).DieImmutable(false)
+	for _, fn := range fns {
+		if fn != nil {
+			fn(nd)
+		}
+	}
+	return d.DieFeed(nd.DieRelease())
+}
+
+// DeepCopy returns a new die with equivalent state. Useful for snapshotting a mutable die.
+func (d *VolumeStatusDie) DeepCopy() *VolumeStatusDie {
+	r := *d.r.DeepCopy()
+	return &VolumeStatusDie{
+		mutable: d.mutable,
+		r:       r,
+		seal:    d.seal,
+	}
+}
+
+// DieSeal returns a new die for the current die's state that is sealed for comparison in future diff and patch operations.
+func (d *VolumeStatusDie) DieSeal() *VolumeStatusDie {
+	return d.DieSealFeed(d.r)
+}
+
+// DieSealFeed returns a new die for the current die's state that uses a specific resource for comparison in future diff and patch operations.
+func (d *VolumeStatusDie) DieSealFeed(r corev1.VolumeStatus) *VolumeStatusDie {
+	if !d.mutable {
+		d = d.DeepCopy()
+	}
+	d.seal = *r.DeepCopy()
+	return d
+}
+
+// DieSealFeedPtr returns a new die for the current die's state that uses a specific resource pointer for comparison in future diff and patch operations. If the resource is nil, the empty value is used instead.
+func (d *VolumeStatusDie) DieSealFeedPtr(r *corev1.VolumeStatus) *VolumeStatusDie {
+	if r == nil {
+		r = &corev1.VolumeStatus{}
+	}
+	return d.DieSealFeed(*r)
+}
+
+// DieSealRelease returns the sealed resource managed by the die.
+func (d *VolumeStatusDie) DieSealRelease() corev1.VolumeStatus {
+	return *d.seal.DeepCopy()
+}
+
+// DieSealReleasePtr returns the sealed resource pointer managed by the die.
+func (d *VolumeStatusDie) DieSealReleasePtr() *corev1.VolumeStatus {
+	r := d.DieSealRelease()
+	return &r
+}
+
+// DieDiff uses cmp.Diff to compare the current value of the die with the sealed value.
+func (d *VolumeStatusDie) DieDiff(opts ...cmp.Option) string {
+	return cmp.Diff(d.seal, d.r, opts...)
+}
+
+// DiePatch generates a patch between the current value of the die and the sealed value.
+func (d *VolumeStatusDie) DiePatch(patchType types.PatchType) ([]byte, error) {
+	return patch.Create(d.seal, d.r, patchType)
+}
+
+// ImageDie mutates Image as a die.
+//
+// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
+func (d *VolumeStatusDie) ImageDie(fn func(d *ImageVolumeStatusDie)) *VolumeStatusDie {
+	return d.DieStamp(func(r *corev1.VolumeStatus) {
+		d := ImageVolumeStatusBlank.DieImmutable(false).DieFeedPtr(r.Image)
+		fn(d)
+		r.Image = d.DieReleasePtr()
+	})
+}
+
+// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
+func (d *VolumeStatusDie) Image(v *corev1.ImageVolumeStatus) *VolumeStatusDie {
+	return d.DieStamp(func(r *corev1.VolumeStatus) {
+		r.Image = v
+	})
+}
+
+var ImageVolumeStatusBlank = (&ImageVolumeStatusDie{}).DieFeed(corev1.ImageVolumeStatus{})
+
+type ImageVolumeStatusDie struct {
+	mutable bool
+	r       corev1.ImageVolumeStatus
+	seal    corev1.ImageVolumeStatus
+}
+
+// DieImmutable returns a new die for the current die's state that is either mutable (`false`) or immutable (`true`).
+func (d *ImageVolumeStatusDie) DieImmutable(immutable bool) *ImageVolumeStatusDie {
+	if d.mutable == !immutable {
+		return d
+	}
+	d = d.DeepCopy()
+	d.mutable = !immutable
+	return d
+}
+
+// DieFeed returns a new die with the provided resource.
+func (d *ImageVolumeStatusDie) DieFeed(r corev1.ImageVolumeStatus) *ImageVolumeStatusDie {
+	if d.mutable {
+		d.r = r
+		return d
+	}
+	return &ImageVolumeStatusDie{
+		mutable: d.mutable,
+		r:       r,
+		seal:    d.seal,
+	}
+}
+
+// DieFeedPtr returns a new die with the provided resource pointer. If the resource is nil, the empty value is used instead.
+func (d *ImageVolumeStatusDie) DieFeedPtr(r *corev1.ImageVolumeStatus) *ImageVolumeStatusDie {
+	if r == nil {
+		r = &corev1.ImageVolumeStatus{}
+	}
+	return d.DieFeed(*r)
+}
+
+// DieFeedDuck returns a new die with the provided value converted into the underlying type. Panics on error.
+func (d *ImageVolumeStatusDie) DieFeedDuck(v any) *ImageVolumeStatusDie {
+	data, err := json.Marshal(v)
+	if err != nil {
+		panic(err)
+	}
+	return d.DieFeedJSON(data)
+}
+
+// DieFeedJSON returns a new die with the provided JSON. Panics on error.
+func (d *ImageVolumeStatusDie) DieFeedJSON(j []byte) *ImageVolumeStatusDie {
+	r := corev1.ImageVolumeStatus{}
+	if err := json.Unmarshal(j, &r); err != nil {
+		panic(err)
+	}
+	return d.DieFeed(r)
+}
+
+// DieFeedYAML returns a new die with the provided YAML. Panics on error.
+func (d *ImageVolumeStatusDie) DieFeedYAML(y []byte) *ImageVolumeStatusDie {
+	r := corev1.ImageVolumeStatus{}
+	if err := yaml.Unmarshal(y, &r); err != nil {
+		panic(err)
+	}
+	return d.DieFeed(r)
+}
+
+// DieFeedYAMLFile returns a new die loading YAML from a file path. Panics on error.
+func (d *ImageVolumeStatusDie) DieFeedYAMLFile(name string) *ImageVolumeStatusDie {
+	y, err := osx.ReadFile(name)
+	if err != nil {
+		panic(err)
+	}
+	return d.DieFeedYAML(y)
+}
+
+// DieFeedRawExtension returns the resource managed by the die as an raw extension. Panics on error.
+func (d *ImageVolumeStatusDie) DieFeedRawExtension(raw runtime.RawExtension) *ImageVolumeStatusDie {
+	j, err := json.Marshal(raw)
+	if err != nil {
+		panic(err)
+	}
+	return d.DieFeedJSON(j)
+}
+
+// DieRelease returns the resource managed by the die.
+func (d *ImageVolumeStatusDie) DieRelease() corev1.ImageVolumeStatus {
+	if d.mutable {
+		return d.r
+	}
+	return *d.r.DeepCopy()
+}
+
+// DieReleasePtr returns a pointer to the resource managed by the die.
+func (d *ImageVolumeStatusDie) DieReleasePtr() *corev1.ImageVolumeStatus {
+	r := d.DieRelease()
+	return &r
+}
+
+// DieReleaseDuck releases the value into the passed value and returns the same. Panics on error.
+func (d *ImageVolumeStatusDie) DieReleaseDuck(v any) any {
+	data := d.DieReleaseJSON()
+	if err := json.Unmarshal(data, v); err != nil {
+		panic(err)
+	}
+	return v
+}
+
+// DieReleaseJSON returns the resource managed by the die as JSON. Panics on error.
+func (d *ImageVolumeStatusDie) DieReleaseJSON() []byte {
+	r := d.DieReleasePtr()
+	j, err := json.Marshal(r)
+	if err != nil {
+		panic(err)
+	}
+	return j
+}
+
+// DieReleaseYAML returns the resource managed by the die as YAML. Panics on error.
+func (d *ImageVolumeStatusDie) DieReleaseYAML() []byte {
+	r := d.DieReleasePtr()
+	y, err := yaml.Marshal(r)
+	if err != nil {
+		panic(err)
+	}
+	return y
+}
+
+// DieReleaseRawExtension returns the resource managed by the die as an raw extension. Panics on error.
+func (d *ImageVolumeStatusDie) DieReleaseRawExtension() runtime.RawExtension {
+	j := d.DieReleaseJSON()
+	raw := runtime.RawExtension{}
+	if err := json.Unmarshal(j, &raw); err != nil {
+		panic(err)
+	}
+	return raw
+}
+
+// DieStamp returns a new die with the resource passed to the callback function. The resource is mutable.
+func (d *ImageVolumeStatusDie) DieStamp(fn func(r *corev1.ImageVolumeStatus)) *ImageVolumeStatusDie {
+	r := d.DieRelease()
+	fn(&r)
+	return d.DieFeed(r)
+}
+
+// Experimental: DieStampAt uses a JSON path (http://goessner.net/articles/JsonPath/) expression to stamp portions of the resource. The callback is invoked with each JSON path match. Panics if the callback function does not accept a single argument of the same type or a pointer to that type as found on the resource at the target location.
+//
+// Future iterations will improve type coercion from the resource to the callback argument.
+func (d *ImageVolumeStatusDie) DieStampAt(jp string, fn interface{}) *ImageVolumeStatusDie {
+	return d.DieStamp(func(r *corev1.ImageVolumeStatus) {
+		if ni := reflectx.ValueOf(fn).Type().NumIn(); ni != 1 {
+			panic(fmtx.Errorf("callback function must have 1 input parameters, found %d", ni))
+		}
+		if no := reflectx.ValueOf(fn).Type().NumOut(); no != 0 {
+			panic(fmtx.Errorf("callback function must have 0 output parameters, found %d", no))
+		}
+
+		cp := jsonpath.New("")
+		if err := cp.Parse(fmtx.Sprintf("{%s}", jp)); err != nil {
+			panic(err)
+		}
+		cr, err := cp.FindResults(r)
+		if err != nil {
+			// errors are expected if a path is not found
+			return
+		}
+		for _, cv := range cr[0] {
+			arg0t := reflectx.ValueOf(fn).Type().In(0)
+
+			var args []reflectx.Value
+			if cv.Type().AssignableTo(arg0t) {
+				args = []reflectx.Value{cv}
+			} else if cv.CanAddr() && cv.Addr().Type().AssignableTo(arg0t) {
+				args = []reflectx.Value{cv.Addr()}
+			} else {
+				panic(fmtx.Errorf("callback function must accept value of type %q, found type %q", cv.Type(), arg0t))
+			}
+
+			reflectx.ValueOf(fn).Call(args)
+		}
+	})
+}
+
+// DieWith returns a new die after passing the current die to the callback function. The passed die is mutable.
+func (d *ImageVolumeStatusDie) DieWith(fns ...func(d *ImageVolumeStatusDie)) *ImageVolumeStatusDie {
+	nd := ImageVolumeStatusBlank.DieFeed(d.DieRelease()).DieImmutable(false)
+	for _, fn := range fns {
+		if fn != nil {
+			fn(nd)
+		}
+	}
+	return d.DieFeed(nd.DieRelease())
+}
+
+// DeepCopy returns a new die with equivalent state. Useful for snapshotting a mutable die.
+func (d *ImageVolumeStatusDie) DeepCopy() *ImageVolumeStatusDie {
+	r := *d.r.DeepCopy()
+	return &ImageVolumeStatusDie{
+		mutable: d.mutable,
+		r:       r,
+		seal:    d.seal,
+	}
+}
+
+// DieSeal returns a new die for the current die's state that is sealed for comparison in future diff and patch operations.
+func (d *ImageVolumeStatusDie) DieSeal() *ImageVolumeStatusDie {
+	return d.DieSealFeed(d.r)
+}
+
+// DieSealFeed returns a new die for the current die's state that uses a specific resource for comparison in future diff and patch operations.
+func (d *ImageVolumeStatusDie) DieSealFeed(r corev1.ImageVolumeStatus) *ImageVolumeStatusDie {
+	if !d.mutable {
+		d = d.DeepCopy()
+	}
+	d.seal = *r.DeepCopy()
+	return d
+}
+
+// DieSealFeedPtr returns a new die for the current die's state that uses a specific resource pointer for comparison in future diff and patch operations. If the resource is nil, the empty value is used instead.
+func (d *ImageVolumeStatusDie) DieSealFeedPtr(r *corev1.ImageVolumeStatus) *ImageVolumeStatusDie {
+	if r == nil {
+		r = &corev1.ImageVolumeStatus{}
+	}
+	return d.DieSealFeed(*r)
+}
+
+// DieSealRelease returns the sealed resource managed by the die.
+func (d *ImageVolumeStatusDie) DieSealRelease() corev1.ImageVolumeStatus {
+	return *d.seal.DeepCopy()
+}
+
+// DieSealReleasePtr returns the sealed resource pointer managed by the die.
+func (d *ImageVolumeStatusDie) DieSealReleasePtr() *corev1.ImageVolumeStatus {
+	r := d.DieSealRelease()
+	return &r
+}
+
+// DieDiff uses cmp.Diff to compare the current value of the die with the sealed value.
+func (d *ImageVolumeStatusDie) DieDiff(opts ...cmp.Option) string {
+	return cmp.Diff(d.seal, d.r, opts...)
+}
+
+// DiePatch generates a patch between the current value of the die and the sealed value.
+func (d *ImageVolumeStatusDie) DiePatch(patchType types.PatchType) ([]byte, error) {
+	return patch.Create(d.seal, d.r, patchType)
+}
+
+// ImageRef is the digest of the image used for this volume.
+//
+// It should have a value that's similar to the pod's status.containerStatuses[i].imageID.
+//
+// The ImageRef length should not exceed 256 characters.
+func (d *ImageVolumeStatusDie) ImageRef(v string) *ImageVolumeStatusDie {
+	return d.DieStamp(func(r *corev1.ImageVolumeStatus) {
+		r.ImageRef = v
 	})
 }
 
@@ -59671,6 +60214,284 @@ func (d *EphemeralVolumeSourceDie) VolumeClaimTemplateDie(fn func(d *PersistentV
 func (d *EphemeralVolumeSourceDie) VolumeClaimTemplate(v *corev1.PersistentVolumeClaimTemplate) *EphemeralVolumeSourceDie {
 	return d.DieStamp(func(r *corev1.EphemeralVolumeSource) {
 		r.VolumeClaimTemplate = v
+	})
+}
+
+var ImageVolumeSourceBlank = (&ImageVolumeSourceDie{}).DieFeed(corev1.ImageVolumeSource{})
+
+type ImageVolumeSourceDie struct {
+	mutable bool
+	r       corev1.ImageVolumeSource
+	seal    corev1.ImageVolumeSource
+}
+
+// DieImmutable returns a new die for the current die's state that is either mutable (`false`) or immutable (`true`).
+func (d *ImageVolumeSourceDie) DieImmutable(immutable bool) *ImageVolumeSourceDie {
+	if d.mutable == !immutable {
+		return d
+	}
+	d = d.DeepCopy()
+	d.mutable = !immutable
+	return d
+}
+
+// DieFeed returns a new die with the provided resource.
+func (d *ImageVolumeSourceDie) DieFeed(r corev1.ImageVolumeSource) *ImageVolumeSourceDie {
+	if d.mutable {
+		d.r = r
+		return d
+	}
+	return &ImageVolumeSourceDie{
+		mutable: d.mutable,
+		r:       r,
+		seal:    d.seal,
+	}
+}
+
+// DieFeedPtr returns a new die with the provided resource pointer. If the resource is nil, the empty value is used instead.
+func (d *ImageVolumeSourceDie) DieFeedPtr(r *corev1.ImageVolumeSource) *ImageVolumeSourceDie {
+	if r == nil {
+		r = &corev1.ImageVolumeSource{}
+	}
+	return d.DieFeed(*r)
+}
+
+// DieFeedDuck returns a new die with the provided value converted into the underlying type. Panics on error.
+func (d *ImageVolumeSourceDie) DieFeedDuck(v any) *ImageVolumeSourceDie {
+	data, err := json.Marshal(v)
+	if err != nil {
+		panic(err)
+	}
+	return d.DieFeedJSON(data)
+}
+
+// DieFeedJSON returns a new die with the provided JSON. Panics on error.
+func (d *ImageVolumeSourceDie) DieFeedJSON(j []byte) *ImageVolumeSourceDie {
+	r := corev1.ImageVolumeSource{}
+	if err := json.Unmarshal(j, &r); err != nil {
+		panic(err)
+	}
+	return d.DieFeed(r)
+}
+
+// DieFeedYAML returns a new die with the provided YAML. Panics on error.
+func (d *ImageVolumeSourceDie) DieFeedYAML(y []byte) *ImageVolumeSourceDie {
+	r := corev1.ImageVolumeSource{}
+	if err := yaml.Unmarshal(y, &r); err != nil {
+		panic(err)
+	}
+	return d.DieFeed(r)
+}
+
+// DieFeedYAMLFile returns a new die loading YAML from a file path. Panics on error.
+func (d *ImageVolumeSourceDie) DieFeedYAMLFile(name string) *ImageVolumeSourceDie {
+	y, err := osx.ReadFile(name)
+	if err != nil {
+		panic(err)
+	}
+	return d.DieFeedYAML(y)
+}
+
+// DieFeedRawExtension returns the resource managed by the die as an raw extension. Panics on error.
+func (d *ImageVolumeSourceDie) DieFeedRawExtension(raw runtime.RawExtension) *ImageVolumeSourceDie {
+	j, err := json.Marshal(raw)
+	if err != nil {
+		panic(err)
+	}
+	return d.DieFeedJSON(j)
+}
+
+// DieRelease returns the resource managed by the die.
+func (d *ImageVolumeSourceDie) DieRelease() corev1.ImageVolumeSource {
+	if d.mutable {
+		return d.r
+	}
+	return *d.r.DeepCopy()
+}
+
+// DieReleasePtr returns a pointer to the resource managed by the die.
+func (d *ImageVolumeSourceDie) DieReleasePtr() *corev1.ImageVolumeSource {
+	r := d.DieRelease()
+	return &r
+}
+
+// DieReleaseDuck releases the value into the passed value and returns the same. Panics on error.
+func (d *ImageVolumeSourceDie) DieReleaseDuck(v any) any {
+	data := d.DieReleaseJSON()
+	if err := json.Unmarshal(data, v); err != nil {
+		panic(err)
+	}
+	return v
+}
+
+// DieReleaseJSON returns the resource managed by the die as JSON. Panics on error.
+func (d *ImageVolumeSourceDie) DieReleaseJSON() []byte {
+	r := d.DieReleasePtr()
+	j, err := json.Marshal(r)
+	if err != nil {
+		panic(err)
+	}
+	return j
+}
+
+// DieReleaseYAML returns the resource managed by the die as YAML. Panics on error.
+func (d *ImageVolumeSourceDie) DieReleaseYAML() []byte {
+	r := d.DieReleasePtr()
+	y, err := yaml.Marshal(r)
+	if err != nil {
+		panic(err)
+	}
+	return y
+}
+
+// DieReleaseRawExtension returns the resource managed by the die as an raw extension. Panics on error.
+func (d *ImageVolumeSourceDie) DieReleaseRawExtension() runtime.RawExtension {
+	j := d.DieReleaseJSON()
+	raw := runtime.RawExtension{}
+	if err := json.Unmarshal(j, &raw); err != nil {
+		panic(err)
+	}
+	return raw
+}
+
+// DieStamp returns a new die with the resource passed to the callback function. The resource is mutable.
+func (d *ImageVolumeSourceDie) DieStamp(fn func(r *corev1.ImageVolumeSource)) *ImageVolumeSourceDie {
+	r := d.DieRelease()
+	fn(&r)
+	return d.DieFeed(r)
+}
+
+// Experimental: DieStampAt uses a JSON path (http://goessner.net/articles/JsonPath/) expression to stamp portions of the resource. The callback is invoked with each JSON path match. Panics if the callback function does not accept a single argument of the same type or a pointer to that type as found on the resource at the target location.
+//
+// Future iterations will improve type coercion from the resource to the callback argument.
+func (d *ImageVolumeSourceDie) DieStampAt(jp string, fn interface{}) *ImageVolumeSourceDie {
+	return d.DieStamp(func(r *corev1.ImageVolumeSource) {
+		if ni := reflectx.ValueOf(fn).Type().NumIn(); ni != 1 {
+			panic(fmtx.Errorf("callback function must have 1 input parameters, found %d", ni))
+		}
+		if no := reflectx.ValueOf(fn).Type().NumOut(); no != 0 {
+			panic(fmtx.Errorf("callback function must have 0 output parameters, found %d", no))
+		}
+
+		cp := jsonpath.New("")
+		if err := cp.Parse(fmtx.Sprintf("{%s}", jp)); err != nil {
+			panic(err)
+		}
+		cr, err := cp.FindResults(r)
+		if err != nil {
+			// errors are expected if a path is not found
+			return
+		}
+		for _, cv := range cr[0] {
+			arg0t := reflectx.ValueOf(fn).Type().In(0)
+
+			var args []reflectx.Value
+			if cv.Type().AssignableTo(arg0t) {
+				args = []reflectx.Value{cv}
+			} else if cv.CanAddr() && cv.Addr().Type().AssignableTo(arg0t) {
+				args = []reflectx.Value{cv.Addr()}
+			} else {
+				panic(fmtx.Errorf("callback function must accept value of type %q, found type %q", cv.Type(), arg0t))
+			}
+
+			reflectx.ValueOf(fn).Call(args)
+		}
+	})
+}
+
+// DieWith returns a new die after passing the current die to the callback function. The passed die is mutable.
+func (d *ImageVolumeSourceDie) DieWith(fns ...func(d *ImageVolumeSourceDie)) *ImageVolumeSourceDie {
+	nd := ImageVolumeSourceBlank.DieFeed(d.DieRelease()).DieImmutable(false)
+	for _, fn := range fns {
+		if fn != nil {
+			fn(nd)
+		}
+	}
+	return d.DieFeed(nd.DieRelease())
+}
+
+// DeepCopy returns a new die with equivalent state. Useful for snapshotting a mutable die.
+func (d *ImageVolumeSourceDie) DeepCopy() *ImageVolumeSourceDie {
+	r := *d.r.DeepCopy()
+	return &ImageVolumeSourceDie{
+		mutable: d.mutable,
+		r:       r,
+		seal:    d.seal,
+	}
+}
+
+// DieSeal returns a new die for the current die's state that is sealed for comparison in future diff and patch operations.
+func (d *ImageVolumeSourceDie) DieSeal() *ImageVolumeSourceDie {
+	return d.DieSealFeed(d.r)
+}
+
+// DieSealFeed returns a new die for the current die's state that uses a specific resource for comparison in future diff and patch operations.
+func (d *ImageVolumeSourceDie) DieSealFeed(r corev1.ImageVolumeSource) *ImageVolumeSourceDie {
+	if !d.mutable {
+		d = d.DeepCopy()
+	}
+	d.seal = *r.DeepCopy()
+	return d
+}
+
+// DieSealFeedPtr returns a new die for the current die's state that uses a specific resource pointer for comparison in future diff and patch operations. If the resource is nil, the empty value is used instead.
+func (d *ImageVolumeSourceDie) DieSealFeedPtr(r *corev1.ImageVolumeSource) *ImageVolumeSourceDie {
+	if r == nil {
+		r = &corev1.ImageVolumeSource{}
+	}
+	return d.DieSealFeed(*r)
+}
+
+// DieSealRelease returns the sealed resource managed by the die.
+func (d *ImageVolumeSourceDie) DieSealRelease() corev1.ImageVolumeSource {
+	return *d.seal.DeepCopy()
+}
+
+// DieSealReleasePtr returns the sealed resource pointer managed by the die.
+func (d *ImageVolumeSourceDie) DieSealReleasePtr() *corev1.ImageVolumeSource {
+	r := d.DieSealRelease()
+	return &r
+}
+
+// DieDiff uses cmp.Diff to compare the current value of the die with the sealed value.
+func (d *ImageVolumeSourceDie) DieDiff(opts ...cmp.Option) string {
+	return cmp.Diff(d.seal, d.r, opts...)
+}
+
+// DiePatch generates a patch between the current value of the die and the sealed value.
+func (d *ImageVolumeSourceDie) DiePatch(patchType types.PatchType) ([]byte, error) {
+	return patch.Create(d.seal, d.r, patchType)
+}
+
+// Required: Image or artifact reference to be used.
+//
+// Behaves in the same way as pod.spec.containers[*].image.
+//
+// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+//
+// More info: https://kubernetes.io/docs/concepts/containers/images
+//
+// # This field is optional to allow higher level config management to default or override
+//
+// container images in workload controllers like Deployments and StatefulSets.
+func (d *ImageVolumeSourceDie) Reference(v string) *ImageVolumeSourceDie {
+	return d.DieStamp(func(r *corev1.ImageVolumeSource) {
+		r.Reference = v
+	})
+}
+
+// Policy for pulling OCI objects. Possible values are:
+//
+// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+//
+// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+//
+// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+//
+// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+func (d *ImageVolumeSourceDie) PullPolicy(v corev1.PullPolicy) *ImageVolumeSourceDie {
+	return d.DieStamp(func(r *corev1.ImageVolumeSource) {
+		r.PullPolicy = v
 	})
 }
 

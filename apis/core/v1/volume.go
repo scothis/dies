@@ -313,6 +313,16 @@ func (d *VolumeDie) EphemeralDie(fn func(d *EphemeralVolumeSourceDie)) *VolumeDi
 	})
 }
 
+func (d *VolumeDie) ImageDie(fn func(d *ImageVolumeSourceDie)) *VolumeDie {
+	return d.DieStamp(func(r *corev1.Volume) {
+		d := ImageVolumeSourceBlank.DieImmutable(false).DieFeedPtr(r.Image)
+		fn(d)
+		r.VolumeSource = corev1.VolumeSource{
+			Image: d.DieReleasePtr(),
+		}
+	})
+}
+
 // +die
 type _ = corev1.HostPathVolumeSource
 
@@ -472,6 +482,9 @@ func (d *CSIVolumeSourceDie) VolumeAttribute(key, value string) *CSIVolumeSource
 // +die
 // +die:field:name=VolumeClaimTemplate,die=PersistentVolumeClaimTemplateDie,pointer=true
 type _ = corev1.EphemeralVolumeSource
+
+// +die
+type _ = corev1.ImageVolumeSource
 
 // +die
 type _ = corev1.KeyToPath

@@ -380,7 +380,7 @@ func (d *LocalSubjectAccessReviewDie) MetadataDie(fn func(d *metav1.ObjectMetaDi
 	})
 }
 
-// Spec holds information about the request being evaluated.  spec.namespace must be equal to the namespace
+// spec holds information about the request being evaluated.  spec.namespace must be equal to the namespace
 //
 // you made the request against.  If empty, it is defaulted.
 func (d *LocalSubjectAccessReviewDie) Spec(v authorizationv1.SubjectAccessReviewSpec) *LocalSubjectAccessReviewDie {
@@ -389,7 +389,7 @@ func (d *LocalSubjectAccessReviewDie) Spec(v authorizationv1.SubjectAccessReview
 	})
 }
 
-// Status is filled in by the server and indicates whether the request is allowed or not
+// status is filled in by the server and indicates whether the request is allowed or not
 func (d *LocalSubjectAccessReviewDie) Status(v authorizationv1.SubjectAccessReviewStatus) *LocalSubjectAccessReviewDie {
 	return d.DieStamp(func(r *authorizationv1.LocalSubjectAccessReview) {
 		r.Status = v
@@ -755,14 +755,14 @@ func (d *SelfSubjectAccessReviewDie) StatusDie(fn func(d *SubjectAccessReviewSta
 	})
 }
 
-// Spec holds information about the request being evaluated.  user and groups must be empty
+// spec holds information about the request being evaluated.  user and groups must be empty
 func (d *SelfSubjectAccessReviewDie) Spec(v authorizationv1.SelfSubjectAccessReviewSpec) *SelfSubjectAccessReviewDie {
 	return d.DieStamp(func(r *authorizationv1.SelfSubjectAccessReview) {
 		r.Spec = v
 	})
 }
 
-// Status is filled in by the server and indicates whether the request is allowed or not
+// status is filled in by the server and indicates whether the request is allowed or not
 func (d *SelfSubjectAccessReviewDie) Status(v authorizationv1.SubjectAccessReviewStatus) *SelfSubjectAccessReviewDie {
 	return d.DieStamp(func(r *authorizationv1.SelfSubjectAccessReview) {
 		r.Status = v
@@ -1017,7 +1017,7 @@ func (d *SelfSubjectAccessReviewSpecDie) DiePatch(patchType types.PatchType) ([]
 
 // ResourceAttributesDie mutates ResourceAttributes as a die.
 //
-// ResourceAuthorizationAttributes describes information for a resource access request
+// resourceAttributes describes information for a resource access request
 func (d *SelfSubjectAccessReviewSpecDie) ResourceAttributesDie(fn func(d *ResourceAttributesDie)) *SelfSubjectAccessReviewSpecDie {
 	return d.DieStamp(func(r *authorizationv1.SelfSubjectAccessReviewSpec) {
 		d := ResourceAttributesBlank.DieImmutable(false).DieFeedPtr(r.ResourceAttributes)
@@ -1028,7 +1028,7 @@ func (d *SelfSubjectAccessReviewSpecDie) ResourceAttributesDie(fn func(d *Resour
 
 // NonResourceAttributesDie mutates NonResourceAttributes as a die.
 //
-// NonResourceAttributes describes information for a non-resource access request
+// nonResourceAttributes describes information for a non-resource access request
 func (d *SelfSubjectAccessReviewSpecDie) NonResourceAttributesDie(fn func(d *NonResourceAttributesDie)) *SelfSubjectAccessReviewSpecDie {
 	return d.DieStamp(func(r *authorizationv1.SelfSubjectAccessReviewSpec) {
 		d := NonResourceAttributesBlank.DieImmutable(false).DieFeedPtr(r.NonResourceAttributes)
@@ -1037,14 +1037,14 @@ func (d *SelfSubjectAccessReviewSpecDie) NonResourceAttributesDie(fn func(d *Non
 	})
 }
 
-// ResourceAuthorizationAttributes describes information for a resource access request
+// resourceAttributes describes information for a resource access request
 func (d *SelfSubjectAccessReviewSpecDie) ResourceAttributes(v *authorizationv1.ResourceAttributes) *SelfSubjectAccessReviewSpecDie {
 	return d.DieStamp(func(r *authorizationv1.SelfSubjectAccessReviewSpec) {
 		r.ResourceAttributes = v
 	})
 }
 
-// NonResourceAttributes describes information for a non-resource access request
+// nonResourceAttributes describes information for a non-resource access request
 func (d *SelfSubjectAccessReviewSpecDie) NonResourceAttributes(v *authorizationv1.NonResourceAttributes) *SelfSubjectAccessReviewSpecDie {
 	return d.DieStamp(func(r *authorizationv1.SelfSubjectAccessReviewSpec) {
 		r.NonResourceAttributes = v
@@ -1410,14 +1410,14 @@ func (d *SelfSubjectRulesReviewDie) StatusDie(fn func(d *SubjectRulesReviewStatu
 	})
 }
 
-// Spec holds information about the request being evaluated.
+// spec holds information about the request being evaluated.
 func (d *SelfSubjectRulesReviewDie) Spec(v authorizationv1.SelfSubjectRulesReviewSpec) *SelfSubjectRulesReviewDie {
 	return d.DieStamp(func(r *authorizationv1.SelfSubjectRulesReview) {
 		r.Spec = v
 	})
 }
 
-// Status is filled in by the server and indicates the set of actions a user can perform.
+// status is filled in by the server and indicates the set of actions a user can perform.
 func (d *SelfSubjectRulesReviewDie) Status(v authorizationv1.SubjectRulesReviewStatus) *SelfSubjectRulesReviewDie {
 	return d.DieStamp(func(r *authorizationv1.SelfSubjectRulesReview) {
 		r.Status = v
@@ -1670,7 +1670,7 @@ func (d *SelfSubjectRulesReviewSpecDie) DiePatch(patchType types.PatchType) ([]b
 	return patch.Create(d.seal, d.r, patchType)
 }
 
-// Namespace to evaluate rules for. Required.
+// namespace to evaluate rules for. Required.
 func (d *SelfSubjectRulesReviewSpecDie) Namespace(v string) *SelfSubjectRulesReviewSpecDie {
 	return d.DieStamp(func(r *authorizationv1.SelfSubjectRulesReviewSpec) {
 		r.Namespace = v
@@ -1925,7 +1925,7 @@ func (d *SubjectRulesReviewStatusDie) DiePatch(patchType types.PatchType) ([]byt
 
 // ResourceRulesDie replaces ResourceRules by collecting the released value from each die passed.
 //
-// ResourceRules is the list of actions the subject is allowed to perform on resources.
+// resourceRules is the list of actions the subject is allowed to perform on resources.
 //
 // The list ordering isn't significant, may contain duplicates, and possibly be incomplete.
 func (d *SubjectRulesReviewStatusDie) ResourceRulesDie(v ...*ResourceRuleDie) *SubjectRulesReviewStatusDie {
@@ -1939,7 +1939,7 @@ func (d *SubjectRulesReviewStatusDie) ResourceRulesDie(v ...*ResourceRuleDie) *S
 
 // NonResourceRulesDie replaces NonResourceRules by collecting the released value from each die passed.
 //
-// NonResourceRules is the list of actions the subject is allowed to perform on non-resources.
+// nonResourceRules is the list of actions the subject is allowed to perform on non-resources.
 //
 // The list ordering isn't significant, may contain duplicates, and possibly be incomplete.
 func (d *SubjectRulesReviewStatusDie) NonResourceRulesDie(v ...*NonResourceRuleDie) *SubjectRulesReviewStatusDie {
@@ -1951,7 +1951,7 @@ func (d *SubjectRulesReviewStatusDie) NonResourceRulesDie(v ...*NonResourceRuleD
 	})
 }
 
-// ResourceRules is the list of actions the subject is allowed to perform on resources.
+// resourceRules is the list of actions the subject is allowed to perform on resources.
 //
 // The list ordering isn't significant, may contain duplicates, and possibly be incomplete.
 func (d *SubjectRulesReviewStatusDie) ResourceRules(v ...authorizationv1.ResourceRule) *SubjectRulesReviewStatusDie {
@@ -1960,7 +1960,7 @@ func (d *SubjectRulesReviewStatusDie) ResourceRules(v ...authorizationv1.Resourc
 	})
 }
 
-// NonResourceRules is the list of actions the subject is allowed to perform on non-resources.
+// nonResourceRules is the list of actions the subject is allowed to perform on non-resources.
 //
 // The list ordering isn't significant, may contain duplicates, and possibly be incomplete.
 func (d *SubjectRulesReviewStatusDie) NonResourceRules(v ...authorizationv1.NonResourceRule) *SubjectRulesReviewStatusDie {
@@ -1969,7 +1969,7 @@ func (d *SubjectRulesReviewStatusDie) NonResourceRules(v ...authorizationv1.NonR
 	})
 }
 
-// Incomplete is true when the rules returned by this call are incomplete. This is most commonly
+// incomplete is true when the rules returned by this call are incomplete. This is most commonly
 //
 // encountered when an authorizer, such as an external authorizer, doesn't support rules evaluation.
 func (d *SubjectRulesReviewStatusDie) Incomplete(v bool) *SubjectRulesReviewStatusDie {
@@ -1978,7 +1978,7 @@ func (d *SubjectRulesReviewStatusDie) Incomplete(v bool) *SubjectRulesReviewStat
 	})
 }
 
-// EvaluationError can appear in combination with Rules. It indicates an error occurred during
+// evaluationError can appear in combination with Rules. It indicates an error occurred during
 //
 // rule evaluation, such as an authorizer that doesn't support rule evaluation, and that
 //
@@ -2235,14 +2235,14 @@ func (d *ResourceRuleDie) DiePatch(patchType types.PatchType) ([]byte, error) {
 	return patch.Create(d.seal, d.r, patchType)
 }
 
-// Verb is a list of kubernetes resource API verbs, like: get, list, watch, create, update, delete, proxy.  "*" means all.
+// verbs is a list of kubernetes resource API verbs, like: get, list, watch, create, update, delete, proxy.  "*" means all.
 func (d *ResourceRuleDie) Verbs(v ...string) *ResourceRuleDie {
 	return d.DieStamp(func(r *authorizationv1.ResourceRule) {
 		r.Verbs = v
 	})
 }
 
-// APIGroups is the name of the APIGroup that contains the resources.  If multiple API groups are specified, any action requested against one of
+// apiGroups is the name of the APIGroup that contains the resources.  If multiple API groups are specified, any action requested against one of
 //
 // the enumerated resources in any API group will be allowed.  "*" means all.
 func (d *ResourceRuleDie) APIGroups(v ...string) *ResourceRuleDie {
@@ -2251,7 +2251,7 @@ func (d *ResourceRuleDie) APIGroups(v ...string) *ResourceRuleDie {
 	})
 }
 
-// Resources is a list of resources this rule applies to.  "*" means all in the specified apiGroups.
+// resources is a list of resources this rule applies to.  "*" means all in the specified apiGroups.
 //
 // "*/foo" represents the subresource 'foo' for all resources in the specified apiGroups.
 func (d *ResourceRuleDie) Resources(v ...string) *ResourceRuleDie {
@@ -2260,7 +2260,7 @@ func (d *ResourceRuleDie) Resources(v ...string) *ResourceRuleDie {
 	})
 }
 
-// ResourceNames is an optional white list of names that the rule applies to.  An empty set means that everything is allowed.  "*" means all.
+// resourceNames is an optional white list of names that the rule applies to.  An empty set means that everything is allowed.  "*" means all.
 func (d *ResourceRuleDie) ResourceNames(v ...string) *ResourceRuleDie {
 	return d.DieStamp(func(r *authorizationv1.ResourceRule) {
 		r.ResourceNames = v
@@ -2513,14 +2513,14 @@ func (d *NonResourceRuleDie) DiePatch(patchType types.PatchType) ([]byte, error)
 	return patch.Create(d.seal, d.r, patchType)
 }
 
-// Verb is a list of kubernetes non-resource API verbs, like: get, post, put, delete, patch, head, options.  "*" means all.
+// verbs is a list of kubernetes non-resource API verbs, like: get, post, put, delete, patch, head, options.  "*" means all.
 func (d *NonResourceRuleDie) Verbs(v ...string) *NonResourceRuleDie {
 	return d.DieStamp(func(r *authorizationv1.NonResourceRule) {
 		r.Verbs = v
 	})
 }
 
-// NonResourceURLs is a set of partial urls that a user should have access to.  *s are allowed, but only as the full,
+// nonResourceURLs is a set of partial urls that a user should have access to.  *s are allowed, but only as the full,
 //
 // final step in the path.  "*" means all.
 func (d *NonResourceRuleDie) NonResourceURLs(v ...string) *NonResourceRuleDie {
@@ -2888,14 +2888,14 @@ func (d *SubjectAccessReviewDie) StatusDie(fn func(d *SubjectAccessReviewStatusD
 	})
 }
 
-// Spec holds information about the request being evaluated
+// spec holds information about the request being evaluated
 func (d *SubjectAccessReviewDie) Spec(v authorizationv1.SubjectAccessReviewSpec) *SubjectAccessReviewDie {
 	return d.DieStamp(func(r *authorizationv1.SubjectAccessReview) {
 		r.Spec = v
 	})
 }
 
-// Status is filled in by the server and indicates whether the request is allowed or not
+// status is filled in by the server and indicates whether the request is allowed or not
 func (d *SubjectAccessReviewDie) Status(v authorizationv1.SubjectAccessReviewStatus) *SubjectAccessReviewDie {
 	return d.DieStamp(func(r *authorizationv1.SubjectAccessReview) {
 		r.Status = v
@@ -3150,7 +3150,7 @@ func (d *SubjectAccessReviewSpecDie) DiePatch(patchType types.PatchType) ([]byte
 
 // ResourceAttributesDie mutates ResourceAttributes as a die.
 //
-// ResourceAuthorizationAttributes describes information for a resource access request
+// resourceAttributes describes information for a resource access request
 func (d *SubjectAccessReviewSpecDie) ResourceAttributesDie(fn func(d *ResourceAttributesDie)) *SubjectAccessReviewSpecDie {
 	return d.DieStamp(func(r *authorizationv1.SubjectAccessReviewSpec) {
 		d := ResourceAttributesBlank.DieImmutable(false).DieFeedPtr(r.ResourceAttributes)
@@ -3161,7 +3161,7 @@ func (d *SubjectAccessReviewSpecDie) ResourceAttributesDie(fn func(d *ResourceAt
 
 // NonResourceAttributesDie mutates NonResourceAttributes as a die.
 //
-// NonResourceAttributes describes information for a non-resource access request
+// nonResourceAttributes describes information for a non-resource access request
 func (d *SubjectAccessReviewSpecDie) NonResourceAttributesDie(fn func(d *NonResourceAttributesDie)) *SubjectAccessReviewSpecDie {
 	return d.DieStamp(func(r *authorizationv1.SubjectAccessReviewSpec) {
 		d := NonResourceAttributesBlank.DieImmutable(false).DieFeedPtr(r.NonResourceAttributes)
@@ -3170,21 +3170,21 @@ func (d *SubjectAccessReviewSpecDie) NonResourceAttributesDie(fn func(d *NonReso
 	})
 }
 
-// ResourceAuthorizationAttributes describes information for a resource access request
+// resourceAttributes describes information for a resource access request
 func (d *SubjectAccessReviewSpecDie) ResourceAttributes(v *authorizationv1.ResourceAttributes) *SubjectAccessReviewSpecDie {
 	return d.DieStamp(func(r *authorizationv1.SubjectAccessReviewSpec) {
 		r.ResourceAttributes = v
 	})
 }
 
-// NonResourceAttributes describes information for a non-resource access request
+// nonResourceAttributes describes information for a non-resource access request
 func (d *SubjectAccessReviewSpecDie) NonResourceAttributes(v *authorizationv1.NonResourceAttributes) *SubjectAccessReviewSpecDie {
 	return d.DieStamp(func(r *authorizationv1.SubjectAccessReviewSpec) {
 		r.NonResourceAttributes = v
 	})
 }
 
-// User is the user you're testing for.
+// user is the user you're testing for.
 //
 // If you specify "User" but not "Groups", then is it interpreted as "What if User were not a member of any groups
 func (d *SubjectAccessReviewSpecDie) User(v string) *SubjectAccessReviewSpecDie {
@@ -3193,14 +3193,14 @@ func (d *SubjectAccessReviewSpecDie) User(v string) *SubjectAccessReviewSpecDie 
 	})
 }
 
-// Groups is the groups you're testing for.
+// groups is the groups you're testing for.
 func (d *SubjectAccessReviewSpecDie) Groups(v ...string) *SubjectAccessReviewSpecDie {
 	return d.DieStamp(func(r *authorizationv1.SubjectAccessReviewSpec) {
 		r.Groups = v
 	})
 }
 
-// UID information about the requesting user.
+// uid information about the requesting user.
 func (d *SubjectAccessReviewSpecDie) UID(v string) *SubjectAccessReviewSpecDie {
 	return d.DieStamp(func(r *authorizationv1.SubjectAccessReviewSpec) {
 		r.UID = v
@@ -3475,7 +3475,7 @@ func (d *ResourceAttributesDie) LabelSelectorDie(fn func(d *LabelSelectorAttribu
 	})
 }
 
-// Namespace is the namespace of the action being requested.  Currently, there is no distinction between no namespace and all namespaces
+// namespace is the namespace of the action being requested.  Currently, there is no distinction between no namespace and all namespaces
 //
 // "" (empty) is defaulted for LocalSubjectAccessReviews
 //
@@ -3488,42 +3488,42 @@ func (d *ResourceAttributesDie) Namespace(v string) *ResourceAttributesDie {
 	})
 }
 
-// Verb is a kubernetes resource API verb, like: get, list, watch, create, update, delete, proxy.  "*" means all.
+// verb is a kubernetes resource API verb, like: get, list, watch, create, update, delete, proxy.  "*" means all.
 func (d *ResourceAttributesDie) Verb(v string) *ResourceAttributesDie {
 	return d.DieStamp(func(r *authorizationv1.ResourceAttributes) {
 		r.Verb = v
 	})
 }
 
-// Group is the API Group of the Resource.  "*" means all.
+// group is the API Group of the Resource.  "*" means all.
 func (d *ResourceAttributesDie) Group(v string) *ResourceAttributesDie {
 	return d.DieStamp(func(r *authorizationv1.ResourceAttributes) {
 		r.Group = v
 	})
 }
 
-// Version is the API Version of the Resource.  "*" means all.
+// version is the API Version of the Resource.  "*" means all.
 func (d *ResourceAttributesDie) Version(v string) *ResourceAttributesDie {
 	return d.DieStamp(func(r *authorizationv1.ResourceAttributes) {
 		r.Version = v
 	})
 }
 
-// Resource is one of the existing resource types.  "*" means all.
+// resource is one of the existing resource types.  "*" means all.
 func (d *ResourceAttributesDie) Resource(v string) *ResourceAttributesDie {
 	return d.DieStamp(func(r *authorizationv1.ResourceAttributes) {
 		r.Resource = v
 	})
 }
 
-// Subresource is one of the existing resource types.  "" means none.
+// subresource is one of the existing resource types.  "" means none.
 func (d *ResourceAttributesDie) Subresource(v string) *ResourceAttributesDie {
 	return d.DieStamp(func(r *authorizationv1.ResourceAttributes) {
 		r.Subresource = v
 	})
 }
 
-// Name is the name of the resource being requested for a "get" or deleted for a "delete". "" (empty) means all.
+// name is the name of the resource being requested for a "get" or deleted for a "delete". "" (empty) means all.
 func (d *ResourceAttributesDie) Name(v string) *ResourceAttributesDie {
 	return d.DieStamp(func(r *authorizationv1.ResourceAttributes) {
 		r.Name = v
@@ -3790,14 +3790,14 @@ func (d *NonResourceAttributesDie) DiePatch(patchType types.PatchType) ([]byte, 
 	return patch.Create(d.seal, d.r, patchType)
 }
 
-// Path is the URL path of the request
+// path is the URL path of the request
 func (d *NonResourceAttributesDie) Path(v string) *NonResourceAttributesDie {
 	return d.DieStamp(func(r *authorizationv1.NonResourceAttributes) {
 		r.Path = v
 	})
 }
 
-// Verb is the standard HTTP verb
+// verb is the standard HTTP verb
 func (d *NonResourceAttributesDie) Verb(v string) *NonResourceAttributesDie {
 	return d.DieStamp(func(r *authorizationv1.NonResourceAttributes) {
 		r.Verb = v
@@ -4050,14 +4050,14 @@ func (d *SubjectAccessReviewStatusDie) DiePatch(patchType types.PatchType) ([]by
 	return patch.Create(d.seal, d.r, patchType)
 }
 
-// Allowed is required. True if the action would be allowed, false otherwise.
+// allowed is required. True if the action would be allowed, false otherwise.
 func (d *SubjectAccessReviewStatusDie) Allowed(v bool) *SubjectAccessReviewStatusDie {
 	return d.DieStamp(func(r *authorizationv1.SubjectAccessReviewStatus) {
 		r.Allowed = v
 	})
 }
 
-// Denied is optional. True if the action would be denied, otherwise
+// denied is optional. True if the action would be denied, otherwise
 //
 // false. If both allowed is false and denied is false, then the
 //
@@ -4070,14 +4070,14 @@ func (d *SubjectAccessReviewStatusDie) Denied(v bool) *SubjectAccessReviewStatus
 	})
 }
 
-// Reason is optional.  It indicates why a request was allowed or denied.
+// reason is optional.  It indicates why a request was allowed or denied.
 func (d *SubjectAccessReviewStatusDie) Reason(v string) *SubjectAccessReviewStatusDie {
 	return d.DieStamp(func(r *authorizationv1.SubjectAccessReviewStatus) {
 		r.Reason = v
 	})
 }
 
-// EvaluationError is an indication that some error occurred during the authorization check.
+// evaluationError is an indication that some error occurred during the authorization check.
 //
 // It is entirely possible to get an error and be able to continue determine authorization status in spite of it.
 //

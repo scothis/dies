@@ -4543,7 +4543,7 @@ func (d *ExactDeviceRequestDie) Count(v int64) *ExactDeviceRequestDie {
 //
 // any resource allocations.
 //
-// # This is an alpha field and requires enabling the DRAAdminAccess
+// # This is an beta field and requires enabling the DRAAdminAccess
 //
 // feature gate. Admin access is disabled if this field is unset or
 //
@@ -7434,7 +7434,7 @@ func (d *DeviceRequestAllocationResultDie) Device(v string) *DeviceRequestAlloca
 //
 // for a definition of mode.
 //
-// # This is an alpha field and requires enabling the DRAAdminAccess
+// # This is an beta field and requires enabling the DRAAdminAccess
 //
 // feature gate. Admin access is disabled if this field is unset or
 //
