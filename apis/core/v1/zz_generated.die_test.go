@@ -1142,12 +1142,12 @@ func TestPodOSDie_MissingMethods(t *testingx.T) {
 	}
 }
 
-func TestWorkloadReferenceDie_MissingMethods(t *testingx.T) {
-	die := WorkloadReferenceBlank
+func TestPodSchedulingGroupDie_MissingMethods(t *testingx.T) {
+	die := PodSchedulingGroupBlank
 	ignore := []string{}
 	diff := testing.DieFieldDiff(die).Delete(ignore...)
 	if diff.Len() != 0 {
-		t.Errorf("found missing fields for WorkloadReferenceDie: %s", diff.List())
+		t.Errorf("found missing fields for PodSchedulingGroupDie: %s", diff.List())
 	}
 }
 
@@ -1175,6 +1175,15 @@ func TestContainerExtendedResourceRequestDie_MissingMethods(t *testingx.T) {
 	diff := testing.DieFieldDiff(die).Delete(ignore...)
 	if diff.Len() != 0 {
 		t.Errorf("found missing fields for ContainerExtendedResourceRequestDie: %s", diff.List())
+	}
+}
+
+func TestNodeAllocatableResourceClaimStatusDie_MissingMethods(t *testingx.T) {
+	die := NodeAllocatableResourceClaimStatusBlank
+	ignore := []string{"Resources"}
+	diff := testing.DieFieldDiff(die).Delete(ignore...)
+	if diff.Len() != 0 {
+		t.Errorf("found missing fields for NodeAllocatableResourceClaimStatusDie: %s", diff.List())
 	}
 }
 

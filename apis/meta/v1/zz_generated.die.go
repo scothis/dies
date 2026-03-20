@@ -1899,6 +1899,27 @@ func (d *ListMetaDie) DiePatch(patchType types.PatchType) ([]byte, error) {
 	return patch.Create(d.seal, d.r, patchType)
 }
 
+// ShardInfoDie mutates ShardInfo as a die.
+//
+// shardInfo is set when the list is a filtered subset of the full collection,
+//
+// as selected by a shard selector on the request. It echoes back the selector
+//
+// so clients can verify which shard they received and merge sharded responses.
+//
+// # Clients should not cache sharded list responses as a full representation
+//
+// of the collection.
+//
+// This is an alpha field and requires enabling the ShardedListAndWatch feature gate.
+func (d *ListMetaDie) ShardInfoDie(fn func(d *ShardInfoDie)) *ListMetaDie {
+	return d.DieStamp(func(r *metav1.ListMeta) {
+		d := ShardInfoBlank.DieImmutable(false).DieFeedPtr(r.ShardInfo)
+		fn(d)
+		r.ShardInfo = d.DieReleasePtr()
+	})
+}
+
 // Deprecated: selfLink is a legacy read-only field that is no longer populated by the system.
 func (d *ListMetaDie) SelfLink(v string) *ListMetaDie {
 	return d.DieStamp(func(r *metav1.ListMeta) {
@@ -1962,6 +1983,278 @@ func (d *ListMetaDie) Continue(v string) *ListMetaDie {
 func (d *ListMetaDie) RemainingItemCount(v *int64) *ListMetaDie {
 	return d.DieStamp(func(r *metav1.ListMeta) {
 		r.RemainingItemCount = v
+	})
+}
+
+// shardInfo is set when the list is a filtered subset of the full collection,
+//
+// as selected by a shard selector on the request. It echoes back the selector
+//
+// so clients can verify which shard they received and merge sharded responses.
+//
+// # Clients should not cache sharded list responses as a full representation
+//
+// of the collection.
+//
+// This is an alpha field and requires enabling the ShardedListAndWatch feature gate.
+func (d *ListMetaDie) ShardInfo(v *metav1.ShardInfo) *ListMetaDie {
+	return d.DieStamp(func(r *metav1.ListMeta) {
+		r.ShardInfo = v
+	})
+}
+
+var ShardInfoBlank = (&ShardInfoDie{}).DieFeed(metav1.ShardInfo{})
+
+type ShardInfoDie struct {
+	mutable bool
+	r       metav1.ShardInfo
+	seal    metav1.ShardInfo
+}
+
+// DieImmutable returns a new die for the current die's state that is either mutable (`false`) or immutable (`true`).
+func (d *ShardInfoDie) DieImmutable(immutable bool) *ShardInfoDie {
+	if d.mutable == !immutable {
+		return d
+	}
+	d = d.DeepCopy()
+	d.mutable = !immutable
+	return d
+}
+
+// DieFeed returns a new die with the provided resource.
+func (d *ShardInfoDie) DieFeed(r metav1.ShardInfo) *ShardInfoDie {
+	if d.mutable {
+		d.r = r
+		return d
+	}
+	return &ShardInfoDie{
+		mutable: d.mutable,
+		r:       r,
+		seal:    d.seal,
+	}
+}
+
+// DieFeedPtr returns a new die with the provided resource pointer. If the resource is nil, the empty value is used instead.
+func (d *ShardInfoDie) DieFeedPtr(r *metav1.ShardInfo) *ShardInfoDie {
+	if r == nil {
+		r = &metav1.ShardInfo{}
+	}
+	return d.DieFeed(*r)
+}
+
+// DieFeedDuck returns a new die with the provided value converted into the underlying type. Panics on error.
+func (d *ShardInfoDie) DieFeedDuck(v any) *ShardInfoDie {
+	data, err := json.Marshal(v)
+	if err != nil {
+		panic(err)
+	}
+	return d.DieFeedJSON(data)
+}
+
+// DieFeedJSON returns a new die with the provided JSON. Panics on error.
+func (d *ShardInfoDie) DieFeedJSON(j []byte) *ShardInfoDie {
+	r := metav1.ShardInfo{}
+	if err := json.Unmarshal(j, &r); err != nil {
+		panic(err)
+	}
+	return d.DieFeed(r)
+}
+
+// DieFeedYAML returns a new die with the provided YAML. Panics on error.
+func (d *ShardInfoDie) DieFeedYAML(y []byte) *ShardInfoDie {
+	r := metav1.ShardInfo{}
+	if err := yaml.Unmarshal(y, &r); err != nil {
+		panic(err)
+	}
+	return d.DieFeed(r)
+}
+
+// DieFeedYAMLFile returns a new die loading YAML from a file path. Panics on error.
+func (d *ShardInfoDie) DieFeedYAMLFile(name string) *ShardInfoDie {
+	y, err := osx.ReadFile(name)
+	if err != nil {
+		panic(err)
+	}
+	return d.DieFeedYAML(y)
+}
+
+// DieFeedRawExtension returns the resource managed by the die as an raw extension. Panics on error.
+func (d *ShardInfoDie) DieFeedRawExtension(raw runtime.RawExtension) *ShardInfoDie {
+	j, err := json.Marshal(raw)
+	if err != nil {
+		panic(err)
+	}
+	return d.DieFeedJSON(j)
+}
+
+// DieRelease returns the resource managed by the die.
+func (d *ShardInfoDie) DieRelease() metav1.ShardInfo {
+	if d.mutable {
+		return d.r
+	}
+	return *d.r.DeepCopy()
+}
+
+// DieReleasePtr returns a pointer to the resource managed by the die.
+func (d *ShardInfoDie) DieReleasePtr() *metav1.ShardInfo {
+	r := d.DieRelease()
+	return &r
+}
+
+// DieReleaseDuck releases the value into the passed value and returns the same. Panics on error.
+func (d *ShardInfoDie) DieReleaseDuck(v any) any {
+	data := d.DieReleaseJSON()
+	if err := json.Unmarshal(data, v); err != nil {
+		panic(err)
+	}
+	return v
+}
+
+// DieReleaseJSON returns the resource managed by the die as JSON. Panics on error.
+func (d *ShardInfoDie) DieReleaseJSON() []byte {
+	r := d.DieReleasePtr()
+	j, err := json.Marshal(r)
+	if err != nil {
+		panic(err)
+	}
+	return j
+}
+
+// DieReleaseYAML returns the resource managed by the die as YAML. Panics on error.
+func (d *ShardInfoDie) DieReleaseYAML() []byte {
+	r := d.DieReleasePtr()
+	y, err := yaml.Marshal(r)
+	if err != nil {
+		panic(err)
+	}
+	return y
+}
+
+// DieReleaseRawExtension returns the resource managed by the die as an raw extension. Panics on error.
+func (d *ShardInfoDie) DieReleaseRawExtension() runtime.RawExtension {
+	j := d.DieReleaseJSON()
+	raw := runtime.RawExtension{}
+	if err := json.Unmarshal(j, &raw); err != nil {
+		panic(err)
+	}
+	return raw
+}
+
+// DieStamp returns a new die with the resource passed to the callback function. The resource is mutable.
+func (d *ShardInfoDie) DieStamp(fn func(r *metav1.ShardInfo)) *ShardInfoDie {
+	r := d.DieRelease()
+	fn(&r)
+	return d.DieFeed(r)
+}
+
+// Experimental: DieStampAt uses a JSON path (http://goessner.net/articles/JsonPath/) expression to stamp portions of the resource. The callback is invoked with each JSON path match. Panics if the callback function does not accept a single argument of the same type or a pointer to that type as found on the resource at the target location.
+//
+// Future iterations will improve type coercion from the resource to the callback argument.
+func (d *ShardInfoDie) DieStampAt(jp string, fn interface{}) *ShardInfoDie {
+	return d.DieStamp(func(r *metav1.ShardInfo) {
+		if ni := reflectx.ValueOf(fn).Type().NumIn(); ni != 1 {
+			panic(fmtx.Errorf("callback function must have 1 input parameters, found %d", ni))
+		}
+		if no := reflectx.ValueOf(fn).Type().NumOut(); no != 0 {
+			panic(fmtx.Errorf("callback function must have 0 output parameters, found %d", no))
+		}
+
+		cp := jsonpath.New("")
+		if err := cp.Parse(fmtx.Sprintf("{%s}", jp)); err != nil {
+			panic(err)
+		}
+		cr, err := cp.FindResults(r)
+		if err != nil {
+			// errors are expected if a path is not found
+			return
+		}
+		for _, cv := range cr[0] {
+			arg0t := reflectx.ValueOf(fn).Type().In(0)
+
+			var args []reflectx.Value
+			if cv.Type().AssignableTo(arg0t) {
+				args = []reflectx.Value{cv}
+			} else if cv.CanAddr() && cv.Addr().Type().AssignableTo(arg0t) {
+				args = []reflectx.Value{cv.Addr()}
+			} else {
+				panic(fmtx.Errorf("callback function must accept value of type %q, found type %q", cv.Type(), arg0t))
+			}
+
+			reflectx.ValueOf(fn).Call(args)
+		}
+	})
+}
+
+// DieWith returns a new die after passing the current die to the callback function. The passed die is mutable.
+func (d *ShardInfoDie) DieWith(fns ...func(d *ShardInfoDie)) *ShardInfoDie {
+	nd := ShardInfoBlank.DieFeed(d.DieRelease()).DieImmutable(false)
+	for _, fn := range fns {
+		if fn != nil {
+			fn(nd)
+		}
+	}
+	return d.DieFeed(nd.DieRelease())
+}
+
+// DeepCopy returns a new die with equivalent state. Useful for snapshotting a mutable die.
+func (d *ShardInfoDie) DeepCopy() *ShardInfoDie {
+	r := *d.r.DeepCopy()
+	return &ShardInfoDie{
+		mutable: d.mutable,
+		r:       r,
+		seal:    d.seal,
+	}
+}
+
+// DieSeal returns a new die for the current die's state that is sealed for comparison in future diff and patch operations.
+func (d *ShardInfoDie) DieSeal() *ShardInfoDie {
+	return d.DieSealFeed(d.r)
+}
+
+// DieSealFeed returns a new die for the current die's state that uses a specific resource for comparison in future diff and patch operations.
+func (d *ShardInfoDie) DieSealFeed(r metav1.ShardInfo) *ShardInfoDie {
+	if !d.mutable {
+		d = d.DeepCopy()
+	}
+	d.seal = *r.DeepCopy()
+	return d
+}
+
+// DieSealFeedPtr returns a new die for the current die's state that uses a specific resource pointer for comparison in future diff and patch operations. If the resource is nil, the empty value is used instead.
+func (d *ShardInfoDie) DieSealFeedPtr(r *metav1.ShardInfo) *ShardInfoDie {
+	if r == nil {
+		r = &metav1.ShardInfo{}
+	}
+	return d.DieSealFeed(*r)
+}
+
+// DieSealRelease returns the sealed resource managed by the die.
+func (d *ShardInfoDie) DieSealRelease() metav1.ShardInfo {
+	return *d.seal.DeepCopy()
+}
+
+// DieSealReleasePtr returns the sealed resource pointer managed by the die.
+func (d *ShardInfoDie) DieSealReleasePtr() *metav1.ShardInfo {
+	r := d.DieSealRelease()
+	return &r
+}
+
+// DieDiff uses cmp.Diff to compare the current value of the die with the sealed value.
+func (d *ShardInfoDie) DieDiff(opts ...cmp.Option) string {
+	return cmp.Diff(d.seal, d.r, opts...)
+}
+
+// DiePatch generates a patch between the current value of the die and the sealed value.
+func (d *ShardInfoDie) DiePatch(patchType types.PatchType) ([]byte, error) {
+	return patch.Create(d.seal, d.r, patchType)
+}
+
+// selector is the shard selector string from the request, echoed back so clients
+//
+// can verify which shard they received and merge responses from multiple shards.
+func (d *ShardInfoDie) Selector(v string) *ShardInfoDie {
+	return d.DieStamp(func(r *metav1.ShardInfo) {
+		r.Selector = v
 	})
 }
 

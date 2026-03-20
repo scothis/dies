@@ -259,7 +259,7 @@ type _ = corev1.ContainerStateRunning
 type _ = corev1.ContainerStateTerminated
 
 // +die
-// +die:field:name=VolumeStatus,die=VolumeStatusDie
+// +die:field:name=VolumeStatus,die=VolumeStatusDie,pointer=true
 type _ = corev1.VolumeMountStatus
 
 // +die

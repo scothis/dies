@@ -89,6 +89,15 @@ func TestListMetaDie_MissingMethods(t *testingx.T) {
 	}
 }
 
+func TestShardInfoDie_MissingMethods(t *testingx.T) {
+	die := ShardInfoBlank
+	ignore := []string{}
+	diff := testing.DieFieldDiff(die).Delete(ignore...)
+	if diff.Len() != 0 {
+		t.Errorf("found missing fields for ShardInfoDie: %s", diff.List())
+	}
+}
+
 func TestObjectMetaDie_MissingMethods(t *testingx.T) {
 	die := ObjectMetaBlank
 	ignore := []string{}
