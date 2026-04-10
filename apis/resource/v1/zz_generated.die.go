@@ -1316,6 +1316,18 @@ func (d *CELDeviceSelectorDie) DiePatch(patchType types.PatchType) ([]byte, erro
 //
 // cel.bind(dra, device.attributes["dra.example.com"], dra.someBool && dra.anotherBool)
 //
+// When the DRAListTypeAttributes feature gate is enabled,
+//
+// the includes() helper is available and it can work for both scalar
+//
+// and list-type attributes. It was introduced to support smooth migration
+//
+// from scalar attributes to list-type attributes while keeping
+//
+// CEL expressions simple. For example:
+//
+// device.attributes["dra.example.com"].models.includes("some-model")
+//
 // The length of the expression must be smaller or equal to 10 Ki. The
 //
 // cost of evaluating it is also limited based on the estimated number
@@ -5200,6 +5212,14 @@ func (d *DeviceConstraintDie) Requests(v ...string) *DeviceConstraintDie {
 //
 // chosen.
 //
+// # When the DRAListTypeAttributes feature gate is enabled, comparison uses
+//
+// set semantics(i.e., element order and duplicates are ignored): list-valued attributes
+//
+// match when the intersection across all devices is non-empty.
+//
+// Scalar values are treated as single-element lists for backward compatibility.
+//
 // Must include the domain qualifier.
 func (d *DeviceConstraintDie) MatchAttribute(v *resourcev1.FullyQualifiedName) *DeviceConstraintDie {
 	return d.DieStamp(func(r *resourcev1.DeviceConstraint) {
@@ -5210,6 +5230,14 @@ func (d *DeviceConstraintDie) MatchAttribute(v *resourcev1.FullyQualifiedName) *
 // DistinctAttribute requires that all devices in question have this
 //
 // attribute and that its type and value are unique across those devices.
+//
+// # When the DRAListTypeAttributes feature gate is enabled, comparison uses
+//
+// set semantics (i.e., element order and duplicates are ignored):
+//
+// list-valued attributes must be pairwise disjoint across devices.
+//
+// Scalar values are treated as singleton sets for backward compatibility.
 //
 // This acts as the inverse of MatchAttribute.
 //
@@ -10502,6 +10530,44 @@ func (d *DeviceAttributeDie) StringValue(v *string) *DeviceAttributeDie {
 func (d *DeviceAttributeDie) VersionValue(v *string) *DeviceAttributeDie {
 	return d.DieStamp(func(r *resourcev1.DeviceAttribute) {
 		r.VersionValue = v
+	})
+}
+
+// IntValues is a non-empty list of numbers.
+//
+// This is an alpha field and requires enabling the DRAListTypeAttributes feature gate.
+func (d *DeviceAttributeDie) IntValues(v ...int64) *DeviceAttributeDie {
+	return d.DieStamp(func(r *resourcev1.DeviceAttribute) {
+		r.IntValues = v
+	})
+}
+
+// BoolValues is a non-empty list of true/false values.
+func (d *DeviceAttributeDie) BoolValues(v ...bool) *DeviceAttributeDie {
+	return d.DieStamp(func(r *resourcev1.DeviceAttribute) {
+		r.BoolValues = v
+	})
+}
+
+// StringValues is a non-empty list of strings.
+//
+// Each string must not be longer than 64 characters.
+//
+// This is an alpha field and requires enabling the DRAListTypeAttributes feature gate.
+func (d *DeviceAttributeDie) StringValues(v ...string) *DeviceAttributeDie {
+	return d.DieStamp(func(r *resourcev1.DeviceAttribute) {
+		r.StringValues = v
+	})
+}
+
+// VersionValues is a non-empty list of semantic versions according to semver.org spec 2.0.0.
+//
+// Each version string must not be longer than 64 characters.
+//
+// This is an alpha field and requires enabling the DRAListTypeAttributes feature gate.
+func (d *DeviceAttributeDie) VersionValues(v ...string) *DeviceAttributeDie {
+	return d.DieStamp(func(r *resourcev1.DeviceAttribute) {
+		r.VersionValues = v
 	})
 }
 
