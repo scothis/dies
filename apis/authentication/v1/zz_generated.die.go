@@ -389,7 +389,7 @@ func (d *SelfSubjectReviewDie) StatusDie(fn func(d *SelfSubjectReviewStatusDie))
 	})
 }
 
-// Status is filled in by the server with the user attributes.
+// status is filled in by the server with the user attributes.
 func (d *SelfSubjectReviewDie) Status(v authenticationv1.SelfSubjectReviewStatus) *SelfSubjectReviewDie {
 	return d.DieStamp(func(r *authenticationv1.SelfSubjectReview) {
 		r.Status = v
@@ -644,7 +644,7 @@ func (d *SelfSubjectReviewStatusDie) DiePatch(patchType types.PatchType) ([]byte
 
 // UserInfoDie mutates UserInfo as a die.
 //
-// User attributes of the user making this request.
+// userInfo is a set of attributes belonging to the user making this request.
 func (d *SelfSubjectReviewStatusDie) UserInfoDie(fn func(d *UserInfoDie)) *SelfSubjectReviewStatusDie {
 	return d.DieStamp(func(r *authenticationv1.SelfSubjectReviewStatus) {
 		d := UserInfoBlank.DieImmutable(false).DieFeed(r.UserInfo)
@@ -653,7 +653,7 @@ func (d *SelfSubjectReviewStatusDie) UserInfoDie(fn func(d *UserInfoDie)) *SelfS
 	})
 }
 
-// User attributes of the user making this request.
+// userInfo is a set of attributes belonging to the user making this request.
 func (d *SelfSubjectReviewStatusDie) UserInfo(v authenticationv1.UserInfo) *SelfSubjectReviewStatusDie {
 	return d.DieStamp(func(r *authenticationv1.SelfSubjectReviewStatus) {
 		r.UserInfo = v
@@ -906,14 +906,14 @@ func (d *UserInfoDie) DiePatch(patchType types.PatchType) ([]byte, error) {
 	return patch.Create(d.seal, d.r, patchType)
 }
 
-// The name that uniquely identifies this user among all active users.
+// username is the name that uniquely identifies this user among all active users.
 func (d *UserInfoDie) Username(v string) *UserInfoDie {
 	return d.DieStamp(func(r *authenticationv1.UserInfo) {
 		r.Username = v
 	})
 }
 
-// A unique value that identifies this user across time. If this user is
+// uid is a unique value that identifies this user across time. If this user is
 //
 // deleted and another user by the same name is added, they will have
 //
@@ -924,7 +924,7 @@ func (d *UserInfoDie) UID(v string) *UserInfoDie {
 	})
 }
 
-// The names of groups this user is a part of.
+// groups is the names of groups this user is a part of.
 func (d *UserInfoDie) Groups(v ...string) *UserInfoDie {
 	return d.DieStamp(func(r *authenticationv1.UserInfo) {
 		r.Groups = v
@@ -1272,14 +1272,14 @@ func (d *TokenReviewDie) MetadataDie(fn func(d *metav1.ObjectMetaDie)) *TokenRev
 	})
 }
 
-// Spec holds information about the request being evaluated
+// spec holds information about the request being evaluated
 func (d *TokenReviewDie) Spec(v authenticationv1.TokenReviewSpec) *TokenReviewDie {
 	return d.DieStamp(func(r *authenticationv1.TokenReview) {
 		r.Spec = v
 	})
 }
 
-// Status is filled in by the server and indicates whether the request can be authenticated.
+// status is filled in by the server and indicates whether the request can be authenticated.
 func (d *TokenReviewDie) Status(v authenticationv1.TokenReviewStatus) *TokenReviewDie {
 	return d.DieStamp(func(r *authenticationv1.TokenReview) {
 		r.Status = v
@@ -1534,7 +1534,7 @@ func (d *TokenRequestSpecDie) DiePatch(patchType types.PatchType) ([]byte, error
 
 // BoundObjectRefDie mutates BoundObjectRef as a die.
 //
-// BoundObjectRef is a reference to an object that the token will be bound to.
+// boundObjectRef is a reference to an object that the token will be bound to.
 //
 // The token will only be valid for as long as the bound object exists.
 //
@@ -1551,7 +1551,7 @@ func (d *TokenRequestSpecDie) BoundObjectRefDie(fn func(d *BoundObjectReferenceD
 	})
 }
 
-// Audiences are the intendend audiences of the token. A recipient of a
+// audiences are the intendend audiences of the token. A recipient of a
 //
 // token must identify themself with an identifier in the list of
 //
@@ -1568,7 +1568,7 @@ func (d *TokenRequestSpecDie) Audiences(v ...string) *TokenRequestSpecDie {
 	})
 }
 
-// ExpirationSeconds is the requested duration of validity of the request. The
+// expirationSeconds is the requested duration of validity of the request. The
 //
 // token issuer may return a token with a different validity duration so a
 //
@@ -1579,7 +1579,7 @@ func (d *TokenRequestSpecDie) ExpirationSeconds(v *int64) *TokenRequestSpecDie {
 	})
 }
 
-// BoundObjectRef is a reference to an object that the token will be bound to.
+// boundObjectRef is a reference to an object that the token will be bound to.
 //
 // The token will only be valid for as long as the bound object exists.
 //
@@ -1840,28 +1840,28 @@ func (d *BoundObjectReferenceDie) DiePatch(patchType types.PatchType) ([]byte, e
 	return patch.Create(d.seal, d.r, patchType)
 }
 
-// Kind of the referent. Valid kinds are 'Pod' and 'Secret'.
+// kind of the referent. Valid kinds are 'Pod' and 'Secret'.
 func (d *BoundObjectReferenceDie) Kind(v string) *BoundObjectReferenceDie {
 	return d.DieStamp(func(r *authenticationv1.BoundObjectReference) {
 		r.Kind = v
 	})
 }
 
-// API version of the referent.
+// apiVersion is API version of the referent.
 func (d *BoundObjectReferenceDie) APIVersion(v string) *BoundObjectReferenceDie {
 	return d.DieStamp(func(r *authenticationv1.BoundObjectReference) {
 		r.APIVersion = v
 	})
 }
 
-// Name of the referent.
+// name of the referent.
 func (d *BoundObjectReferenceDie) Name(v string) *BoundObjectReferenceDie {
 	return d.DieStamp(func(r *authenticationv1.BoundObjectReference) {
 		r.Name = v
 	})
 }
 
-// UID of the referent.
+// uid of the referent.
 func (d *BoundObjectReferenceDie) UID(v types.UID) *BoundObjectReferenceDie {
 	return d.DieStamp(func(r *authenticationv1.BoundObjectReference) {
 		r.UID = v
@@ -2114,14 +2114,14 @@ func (d *TokenRequestStatusDie) DiePatch(patchType types.PatchType) ([]byte, err
 	return patch.Create(d.seal, d.r, patchType)
 }
 
-// Token is the opaque bearer token.
+// token is the opaque bearer token.
 func (d *TokenRequestStatusDie) Token(v string) *TokenRequestStatusDie {
 	return d.DieStamp(func(r *authenticationv1.TokenRequestStatus) {
 		r.Token = v
 	})
 }
 
-// ExpirationTimestamp is the time of expiration of the returned token.
+// expirationTimestamp is the time of expiration of the returned token.
 func (d *TokenRequestStatusDie) ExpirationTimestamp(v apismetav1.Time) *TokenRequestStatusDie {
 	return d.DieStamp(func(r *authenticationv1.TokenRequestStatus) {
 		r.ExpirationTimestamp = v

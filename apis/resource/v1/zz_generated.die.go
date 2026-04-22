@@ -721,7 +721,7 @@ func (d *DeviceClassSpecDie) Config(v ...resourcev1.DeviceClassConfiguration) *D
 //
 // lexicographically sorted first is picked.
 //
-// This is an alpha field.
+// This is a beta field.
 func (d *DeviceClassSpecDie) ExtendedResourceName(v *string) *DeviceClassSpecDie {
 	return d.DieStamp(func(r *resourcev1.DeviceClassSpec) {
 		r.ExtendedResourceName = v
@@ -1315,6 +1315,18 @@ func (d *CELDeviceSelectorDie) DiePatch(patchType types.PatchType) ([]byte, erro
 // same domain. For example:
 //
 // cel.bind(dra, device.attributes["dra.example.com"], dra.someBool && dra.anotherBool)
+//
+// When the DRAListTypeAttributes feature gate is enabled,
+//
+// the includes() helper is available and it can work for both scalar
+//
+// and list-type attributes. It was introduced to support smooth migration
+//
+// from scalar attributes to list-type attributes while keeping
+//
+// CEL expressions simple. For example:
+//
+// device.attributes["dra.example.com"].models.includes("some-model")
 //
 // The length of the expression must be smaller or equal to 10 Ki. The
 //
@@ -3723,7 +3735,7 @@ func (d *DeviceSubRequestDie) SelectorsDie(v ...*DeviceSelectorDie) *DeviceSubRe
 //
 // The maximum number of tolerations is 16.
 //
-// # This is an alpha field and requires enabling the DRADeviceTaints
+// # This is a beta field and requires enabling the DRADeviceTaints
 //
 // feature gate.
 func (d *DeviceSubRequestDie) TolerationsDie(v ...*DeviceTolerationDie) *DeviceSubRequestDie {
@@ -3875,7 +3887,7 @@ func (d *DeviceSubRequestDie) Count(v int64) *DeviceSubRequestDie {
 //
 // The maximum number of tolerations is 16.
 //
-// # This is an alpha field and requires enabling the DRADeviceTaints
+// # This is a beta field and requires enabling the DRADeviceTaints
 //
 // feature gate.
 func (d *DeviceSubRequestDie) Tolerations(v ...resourcev1.DeviceToleration) *DeviceSubRequestDie {
@@ -4443,7 +4455,7 @@ func (d *ExactDeviceRequestDie) SelectorsDie(v ...*DeviceSelectorDie) *ExactDevi
 //
 // The maximum number of tolerations is 16.
 //
-// # This is an alpha field and requires enabling the DRADeviceTaints
+// # This is a beta field and requires enabling the DRADeviceTaints
 //
 // feature gate.
 func (d *ExactDeviceRequestDie) TolerationsDie(v ...*DeviceTolerationDie) *ExactDeviceRequestDie {
@@ -4543,9 +4555,7 @@ func (d *ExactDeviceRequestDie) Count(v int64) *ExactDeviceRequestDie {
 //
 // any resource allocations.
 //
-// # This is an alpha field and requires enabling the DRAAdminAccess
-//
-// feature gate. Admin access is disabled if this field is unset or
+// # Admin access is disabled if this field is unset or
 //
 // set to false, otherwise it is enabled.
 func (d *ExactDeviceRequestDie) AdminAccess(v *bool) *ExactDeviceRequestDie {
@@ -4576,7 +4586,7 @@ func (d *ExactDeviceRequestDie) AdminAccess(v *bool) *ExactDeviceRequestDie {
 //
 // The maximum number of tolerations is 16.
 //
-// # This is an alpha field and requires enabling the DRADeviceTaints
+// # This is a beta field and requires enabling the DRADeviceTaints
 //
 // feature gate.
 func (d *ExactDeviceRequestDie) Tolerations(v ...resourcev1.DeviceToleration) *ExactDeviceRequestDie {
@@ -5202,6 +5212,14 @@ func (d *DeviceConstraintDie) Requests(v ...string) *DeviceConstraintDie {
 //
 // chosen.
 //
+// # When the DRAListTypeAttributes feature gate is enabled, comparison uses
+//
+// set semantics(i.e., element order and duplicates are ignored): list-valued attributes
+//
+// match when the intersection across all devices is non-empty.
+//
+// Scalar values are treated as single-element lists for backward compatibility.
+//
 // Must include the domain qualifier.
 func (d *DeviceConstraintDie) MatchAttribute(v *resourcev1.FullyQualifiedName) *DeviceConstraintDie {
 	return d.DieStamp(func(r *resourcev1.DeviceConstraint) {
@@ -5212,6 +5230,14 @@ func (d *DeviceConstraintDie) MatchAttribute(v *resourcev1.FullyQualifiedName) *
 // DistinctAttribute requires that all devices in question have this
 //
 // attribute and that its type and value are unique across those devices.
+//
+// # When the DRAListTypeAttributes feature gate is enabled, comparison uses
+//
+// set semantics (i.e., element order and duplicates are ignored):
+//
+// list-valued attributes must be pairwise disjoint across devices.
+//
+// Scalar values are treated as singleton sets for backward compatibility.
 //
 // This acts as the inverse of MatchAttribute.
 //
@@ -6474,7 +6500,7 @@ func (d *NetworkDeviceDataDie) DiePatch(patchType types.PatchType) ([]byte, erro
 //
 // network interface being configured in the pod.
 //
-// Must not be longer than 256 characters.
+// Must not be longer than 256 bytes.
 func (d *NetworkDeviceDataDie) InterfaceName(v string) *NetworkDeviceDataDie {
 	return d.DieStamp(func(r *resourcev1.NetworkDeviceData) {
 		r.InterfaceName = v
@@ -6498,7 +6524,7 @@ func (d *NetworkDeviceDataDie) IPs(v ...string) *NetworkDeviceDataDie {
 
 // HardwareAddress represents the hardware address (e.g. MAC Address) of the device's network interface.
 //
-// Must not be longer than 128 characters.
+// Must not be longer than 128 bytes.
 func (d *NetworkDeviceDataDie) HardwareAddress(v string) *NetworkDeviceDataDie {
 	return d.DieStamp(func(r *resourcev1.NetworkDeviceData) {
 		r.HardwareAddress = v
@@ -6795,7 +6821,7 @@ func (d *AllocationResultDie) NodeSelector(v *apicorev1.NodeSelector) *Allocatio
 //
 // This field is not guaranteed to be set, in which case that time is unknown.
 //
-// # This is an alpha field and requires enabling the DRADeviceBindingConditions and DRAResourceClaimDeviceStatus
+// # This is a beta field and requires enabling the DRADeviceBindingConditions and DRAResourceClaimDeviceStatus
 //
 // feature gate.
 func (d *AllocationResultDie) AllocationTimestamp(v *apismetav1.Time) *AllocationResultDie {
@@ -7362,7 +7388,7 @@ func (d *DeviceRequestAllocationResultDie) DiePatch(patchType types.PatchType) (
 //
 // The maximum number of tolerations is 16.
 //
-// # This is an alpha field and requires enabling the DRADeviceTaints
+// # This is a beta field and requires enabling the DRADeviceTaints
 //
 // feature gate.
 func (d *DeviceRequestAllocationResultDie) TolerationsDie(v ...*DeviceTolerationDie) *DeviceRequestAllocationResultDie {
@@ -7434,9 +7460,7 @@ func (d *DeviceRequestAllocationResultDie) Device(v string) *DeviceRequestAlloca
 //
 // for a definition of mode.
 //
-// # This is an alpha field and requires enabling the DRAAdminAccess
-//
-// feature gate. Admin access is disabled if this field is unset or
+// # Admin access is disabled if this field is unset or
 //
 // set to false, otherwise it is enabled.
 func (d *DeviceRequestAllocationResultDie) AdminAccess(v *bool) *DeviceRequestAllocationResultDie {
@@ -7451,7 +7475,7 @@ func (d *DeviceRequestAllocationResultDie) AdminAccess(v *bool) *DeviceRequestAl
 //
 // The maximum number of tolerations is 16.
 //
-// # This is an alpha field and requires enabling the DRADeviceTaints
+// # This is a beta field and requires enabling the DRADeviceTaints
 //
 // feature gate.
 func (d *DeviceRequestAllocationResultDie) Tolerations(v ...resourcev1.DeviceToleration) *DeviceRequestAllocationResultDie {
@@ -7464,7 +7488,7 @@ func (d *DeviceRequestAllocationResultDie) Tolerations(v ...resourcev1.DeviceTol
 //
 // from the corresponding ResourceSlice at the time of allocation.
 //
-// # This is an alpha field and requires enabling the DRADeviceBindingConditions and DRAResourceClaimDeviceStatus
+// # This is a beta field and requires enabling the DRADeviceBindingConditions and DRAResourceClaimDeviceStatus
 //
 // feature gates.
 func (d *DeviceRequestAllocationResultDie) BindingConditions(v ...string) *DeviceRequestAllocationResultDie {
@@ -7477,7 +7501,7 @@ func (d *DeviceRequestAllocationResultDie) BindingConditions(v ...string) *Devic
 //
 // from the corresponding ResourceSlice at the time of allocation.
 //
-// # This is an alpha field and requires enabling the DRADeviceBindingConditions and DRAResourceClaimDeviceStatus
+// # This is a beta field and requires enabling the DRADeviceBindingConditions and DRAResourceClaimDeviceStatus
 //
 // feature gates.
 func (d *DeviceRequestAllocationResultDie) BindingFailureConditions(v ...string) *DeviceRequestAllocationResultDie {
@@ -10075,7 +10099,7 @@ func (d *DeviceDie) NodeSelectorDie(fn func(d *corev1.NodeSelectorDie)) *DeviceD
 //
 // allowed devices per ResourceSlice is 64 instead of 128.
 //
-// # This is an alpha field and requires enabling the DRADeviceTaints
+// # This is a beta field and requires enabling the DRADeviceTaints
 //
 // feature gate.
 func (d *DeviceDie) TaintsDie(v ...*DeviceTaintDie) *DeviceDie {
@@ -10156,7 +10180,7 @@ func (d *DeviceDie) AllNodes(v *bool) *DeviceDie {
 //
 // allowed devices per ResourceSlice is 64 instead of 128.
 //
-// # This is an alpha field and requires enabling the DRADeviceTaints
+// # This is a beta field and requires enabling the DRADeviceTaints
 //
 // feature gate.
 func (d *DeviceDie) Taints(v ...resourcev1.DeviceTaint) *DeviceDie {
@@ -10173,7 +10197,7 @@ func (d *DeviceDie) Taints(v ...resourcev1.DeviceTaint) *DeviceDie {
 //
 // to match the node where the allocation was made.
 //
-// # This is an alpha field and requires enabling the DRADeviceBindingConditions and DRAResourceClaimDeviceStatus
+// # This is a beta field and requires enabling the DRADeviceBindingConditions and DRAResourceClaimDeviceStatus
 //
 // feature gates.
 func (d *DeviceDie) BindsToNode(v *bool) *DeviceDie {
@@ -10194,7 +10218,7 @@ func (d *DeviceDie) BindsToNode(v *bool) *DeviceDie {
 //
 // The conditions must be a valid condition type string.
 //
-// # This is an alpha field and requires enabling the DRADeviceBindingConditions and DRAResourceClaimDeviceStatus
+// # This is a beta field and requires enabling the DRADeviceBindingConditions and DRAResourceClaimDeviceStatus
 //
 // feature gates.
 func (d *DeviceDie) BindingConditions(v ...string) *DeviceDie {
@@ -10213,7 +10237,7 @@ func (d *DeviceDie) BindingConditions(v ...string) *DeviceDie {
 //
 // The conditions must be a valid condition type string.
 //
-// # This is an alpha field and requires enabling the DRADeviceBindingConditions and DRAResourceClaimDeviceStatus
+// # This is a beta field and requires enabling the DRADeviceBindingConditions and DRAResourceClaimDeviceStatus
 //
 // feature gates.
 func (d *DeviceDie) BindingFailureConditions(v ...string) *DeviceDie {
@@ -10506,6 +10530,44 @@ func (d *DeviceAttributeDie) StringValue(v *string) *DeviceAttributeDie {
 func (d *DeviceAttributeDie) VersionValue(v *string) *DeviceAttributeDie {
 	return d.DieStamp(func(r *resourcev1.DeviceAttribute) {
 		r.VersionValue = v
+	})
+}
+
+// IntValues is a non-empty list of numbers.
+//
+// This is an alpha field and requires enabling the DRAListTypeAttributes feature gate.
+func (d *DeviceAttributeDie) IntValues(v ...int64) *DeviceAttributeDie {
+	return d.DieStamp(func(r *resourcev1.DeviceAttribute) {
+		r.IntValues = v
+	})
+}
+
+// BoolValues is a non-empty list of true/false values.
+func (d *DeviceAttributeDie) BoolValues(v ...bool) *DeviceAttributeDie {
+	return d.DieStamp(func(r *resourcev1.DeviceAttribute) {
+		r.BoolValues = v
+	})
+}
+
+// StringValues is a non-empty list of strings.
+//
+// Each string must not be longer than 64 characters.
+//
+// This is an alpha field and requires enabling the DRAListTypeAttributes feature gate.
+func (d *DeviceAttributeDie) StringValues(v ...string) *DeviceAttributeDie {
+	return d.DieStamp(func(r *resourcev1.DeviceAttribute) {
+		r.StringValues = v
+	})
+}
+
+// VersionValues is a non-empty list of semantic versions according to semver.org spec 2.0.0.
+//
+// Each version string must not be longer than 64 characters.
+//
+// This is an alpha field and requires enabling the DRAListTypeAttributes feature gate.
+func (d *DeviceAttributeDie) VersionValues(v ...string) *DeviceAttributeDie {
+	return d.DieStamp(func(r *resourcev1.DeviceAttribute) {
+		r.VersionValues = v
 	})
 }
 
@@ -10822,6 +10884,354 @@ func (d *DeviceCapacityDie) RequestPolicy(v *resourcev1.CapacityRequestPolicy) *
 	return d.DieStamp(func(r *resourcev1.DeviceCapacity) {
 		r.RequestPolicy = v
 	})
+}
+
+var NodeAllocatableResourceMappingBlank = (&NodeAllocatableResourceMappingDie{}).DieFeed(resourcev1.NodeAllocatableResourceMapping{})
+
+type NodeAllocatableResourceMappingDie struct {
+	mutable bool
+	r       resourcev1.NodeAllocatableResourceMapping
+	seal    resourcev1.NodeAllocatableResourceMapping
+}
+
+// DieImmutable returns a new die for the current die's state that is either mutable (`false`) or immutable (`true`).
+func (d *NodeAllocatableResourceMappingDie) DieImmutable(immutable bool) *NodeAllocatableResourceMappingDie {
+	if d.mutable == !immutable {
+		return d
+	}
+	d = d.DeepCopy()
+	d.mutable = !immutable
+	return d
+}
+
+// DieFeed returns a new die with the provided resource.
+func (d *NodeAllocatableResourceMappingDie) DieFeed(r resourcev1.NodeAllocatableResourceMapping) *NodeAllocatableResourceMappingDie {
+	if d.mutable {
+		d.r = r
+		return d
+	}
+	return &NodeAllocatableResourceMappingDie{
+		mutable: d.mutable,
+		r:       r,
+		seal:    d.seal,
+	}
+}
+
+// DieFeedPtr returns a new die with the provided resource pointer. If the resource is nil, the empty value is used instead.
+func (d *NodeAllocatableResourceMappingDie) DieFeedPtr(r *resourcev1.NodeAllocatableResourceMapping) *NodeAllocatableResourceMappingDie {
+	if r == nil {
+		r = &resourcev1.NodeAllocatableResourceMapping{}
+	}
+	return d.DieFeed(*r)
+}
+
+// DieFeedDuck returns a new die with the provided value converted into the underlying type. Panics on error.
+func (d *NodeAllocatableResourceMappingDie) DieFeedDuck(v any) *NodeAllocatableResourceMappingDie {
+	data, err := json.Marshal(v)
+	if err != nil {
+		panic(err)
+	}
+	return d.DieFeedJSON(data)
+}
+
+// DieFeedJSON returns a new die with the provided JSON. Panics on error.
+func (d *NodeAllocatableResourceMappingDie) DieFeedJSON(j []byte) *NodeAllocatableResourceMappingDie {
+	r := resourcev1.NodeAllocatableResourceMapping{}
+	if err := json.Unmarshal(j, &r); err != nil {
+		panic(err)
+	}
+	return d.DieFeed(r)
+}
+
+// DieFeedYAML returns a new die with the provided YAML. Panics on error.
+func (d *NodeAllocatableResourceMappingDie) DieFeedYAML(y []byte) *NodeAllocatableResourceMappingDie {
+	r := resourcev1.NodeAllocatableResourceMapping{}
+	if err := yaml.Unmarshal(y, &r); err != nil {
+		panic(err)
+	}
+	return d.DieFeed(r)
+}
+
+// DieFeedYAMLFile returns a new die loading YAML from a file path. Panics on error.
+func (d *NodeAllocatableResourceMappingDie) DieFeedYAMLFile(name string) *NodeAllocatableResourceMappingDie {
+	y, err := osx.ReadFile(name)
+	if err != nil {
+		panic(err)
+	}
+	return d.DieFeedYAML(y)
+}
+
+// DieFeedRawExtension returns the resource managed by the die as an raw extension. Panics on error.
+func (d *NodeAllocatableResourceMappingDie) DieFeedRawExtension(raw runtime.RawExtension) *NodeAllocatableResourceMappingDie {
+	j, err := json.Marshal(raw)
+	if err != nil {
+		panic(err)
+	}
+	return d.DieFeedJSON(j)
+}
+
+// DieRelease returns the resource managed by the die.
+func (d *NodeAllocatableResourceMappingDie) DieRelease() resourcev1.NodeAllocatableResourceMapping {
+	if d.mutable {
+		return d.r
+	}
+	return *d.r.DeepCopy()
+}
+
+// DieReleasePtr returns a pointer to the resource managed by the die.
+func (d *NodeAllocatableResourceMappingDie) DieReleasePtr() *resourcev1.NodeAllocatableResourceMapping {
+	r := d.DieRelease()
+	return &r
+}
+
+// DieReleaseDuck releases the value into the passed value and returns the same. Panics on error.
+func (d *NodeAllocatableResourceMappingDie) DieReleaseDuck(v any) any {
+	data := d.DieReleaseJSON()
+	if err := json.Unmarshal(data, v); err != nil {
+		panic(err)
+	}
+	return v
+}
+
+// DieReleaseJSON returns the resource managed by the die as JSON. Panics on error.
+func (d *NodeAllocatableResourceMappingDie) DieReleaseJSON() []byte {
+	r := d.DieReleasePtr()
+	j, err := json.Marshal(r)
+	if err != nil {
+		panic(err)
+	}
+	return j
+}
+
+// DieReleaseYAML returns the resource managed by the die as YAML. Panics on error.
+func (d *NodeAllocatableResourceMappingDie) DieReleaseYAML() []byte {
+	r := d.DieReleasePtr()
+	y, err := yaml.Marshal(r)
+	if err != nil {
+		panic(err)
+	}
+	return y
+}
+
+// DieReleaseRawExtension returns the resource managed by the die as an raw extension. Panics on error.
+func (d *NodeAllocatableResourceMappingDie) DieReleaseRawExtension() runtime.RawExtension {
+	j := d.DieReleaseJSON()
+	raw := runtime.RawExtension{}
+	if err := json.Unmarshal(j, &raw); err != nil {
+		panic(err)
+	}
+	return raw
+}
+
+// DieStamp returns a new die with the resource passed to the callback function. The resource is mutable.
+func (d *NodeAllocatableResourceMappingDie) DieStamp(fn func(r *resourcev1.NodeAllocatableResourceMapping)) *NodeAllocatableResourceMappingDie {
+	r := d.DieRelease()
+	fn(&r)
+	return d.DieFeed(r)
+}
+
+// Experimental: DieStampAt uses a JSON path (http://goessner.net/articles/JsonPath/) expression to stamp portions of the resource. The callback is invoked with each JSON path match. Panics if the callback function does not accept a single argument of the same type or a pointer to that type as found on the resource at the target location.
+//
+// Future iterations will improve type coercion from the resource to the callback argument.
+func (d *NodeAllocatableResourceMappingDie) DieStampAt(jp string, fn interface{}) *NodeAllocatableResourceMappingDie {
+	return d.DieStamp(func(r *resourcev1.NodeAllocatableResourceMapping) {
+		if ni := reflectx.ValueOf(fn).Type().NumIn(); ni != 1 {
+			panic(fmtx.Errorf("callback function must have 1 input parameters, found %d", ni))
+		}
+		if no := reflectx.ValueOf(fn).Type().NumOut(); no != 0 {
+			panic(fmtx.Errorf("callback function must have 0 output parameters, found %d", no))
+		}
+
+		cp := jsonpath.New("")
+		if err := cp.Parse(fmtx.Sprintf("{%s}", jp)); err != nil {
+			panic(err)
+		}
+		cr, err := cp.FindResults(r)
+		if err != nil {
+			// errors are expected if a path is not found
+			return
+		}
+		for _, cv := range cr[0] {
+			arg0t := reflectx.ValueOf(fn).Type().In(0)
+
+			var args []reflectx.Value
+			if cv.Type().AssignableTo(arg0t) {
+				args = []reflectx.Value{cv}
+			} else if cv.CanAddr() && cv.Addr().Type().AssignableTo(arg0t) {
+				args = []reflectx.Value{cv.Addr()}
+			} else {
+				panic(fmtx.Errorf("callback function must accept value of type %q, found type %q", cv.Type(), arg0t))
+			}
+
+			reflectx.ValueOf(fn).Call(args)
+		}
+	})
+}
+
+// DieWith returns a new die after passing the current die to the callback function. The passed die is mutable.
+func (d *NodeAllocatableResourceMappingDie) DieWith(fns ...func(d *NodeAllocatableResourceMappingDie)) *NodeAllocatableResourceMappingDie {
+	nd := NodeAllocatableResourceMappingBlank.DieFeed(d.DieRelease()).DieImmutable(false)
+	for _, fn := range fns {
+		if fn != nil {
+			fn(nd)
+		}
+	}
+	return d.DieFeed(nd.DieRelease())
+}
+
+// DeepCopy returns a new die with equivalent state. Useful for snapshotting a mutable die.
+func (d *NodeAllocatableResourceMappingDie) DeepCopy() *NodeAllocatableResourceMappingDie {
+	r := *d.r.DeepCopy()
+	return &NodeAllocatableResourceMappingDie{
+		mutable: d.mutable,
+		r:       r,
+		seal:    d.seal,
+	}
+}
+
+// DieSeal returns a new die for the current die's state that is sealed for comparison in future diff and patch operations.
+func (d *NodeAllocatableResourceMappingDie) DieSeal() *NodeAllocatableResourceMappingDie {
+	return d.DieSealFeed(d.r)
+}
+
+// DieSealFeed returns a new die for the current die's state that uses a specific resource for comparison in future diff and patch operations.
+func (d *NodeAllocatableResourceMappingDie) DieSealFeed(r resourcev1.NodeAllocatableResourceMapping) *NodeAllocatableResourceMappingDie {
+	if !d.mutable {
+		d = d.DeepCopy()
+	}
+	d.seal = *r.DeepCopy()
+	return d
+}
+
+// DieSealFeedPtr returns a new die for the current die's state that uses a specific resource pointer for comparison in future diff and patch operations. If the resource is nil, the empty value is used instead.
+func (d *NodeAllocatableResourceMappingDie) DieSealFeedPtr(r *resourcev1.NodeAllocatableResourceMapping) *NodeAllocatableResourceMappingDie {
+	if r == nil {
+		r = &resourcev1.NodeAllocatableResourceMapping{}
+	}
+	return d.DieSealFeed(*r)
+}
+
+// DieSealRelease returns the sealed resource managed by the die.
+func (d *NodeAllocatableResourceMappingDie) DieSealRelease() resourcev1.NodeAllocatableResourceMapping {
+	return *d.seal.DeepCopy()
+}
+
+// DieSealReleasePtr returns the sealed resource pointer managed by the die.
+func (d *NodeAllocatableResourceMappingDie) DieSealReleasePtr() *resourcev1.NodeAllocatableResourceMapping {
+	r := d.DieSealRelease()
+	return &r
+}
+
+// DieDiff uses cmp.Diff to compare the current value of the die with the sealed value.
+func (d *NodeAllocatableResourceMappingDie) DieDiff(opts ...cmp.Option) string {
+	return cmp.Diff(d.seal, d.r, opts...)
+}
+
+// DiePatch generates a patch between the current value of the die and the sealed value.
+func (d *NodeAllocatableResourceMappingDie) DiePatch(patchType types.PatchType) ([]byte, error) {
+	return patch.Create(d.seal, d.r, patchType)
+}
+
+// CapacityKey references a capacity name defined as a key in the
+//
+// `spec.devices[*].capacity` map. When this field is set, the value associated with
+//
+// this key in the `status.allocation.devices.results[*].consumedCapacity` map
+//
+// (for a specific claim allocation) determines the base quantity for
+//
+// the node allocatable resource. If `allocationMultiplier` is also set, it is
+//
+// multiplied with the base quantity.
+//
+// For example, if `spec.devices[*].capacity` has an entry "dra.example.com/memory": "128Gi",
+//
+// and this field is set to "dra.example.com/memory", then for a claim allocation
+//
+// that consumes { "dra.example.com/memory": "4Gi" } the base quantity for the
+//
+// node allocatable resource mapping will be "4Gi", and `allocationMultiplier` should
+//
+// be omitted or set to "1".
+func (d *NodeAllocatableResourceMappingDie) CapacityKey(v *resourcev1.QualifiedName) *NodeAllocatableResourceMappingDie {
+	return d.DieStamp(func(r *resourcev1.NodeAllocatableResourceMapping) {
+		r.CapacityKey = v
+	})
+}
+
+// AllocationMultiplier is used as a multiplier for the allocated device count or the allocated capacity in the claim.
+//
+// It defaults to 1 if not specified. How the field is used also depends on whether `capacityKey` is set.
+//
+// 1.  If `capacityKey` is NOT set: `allocationMultiplier` multiplies the device count allocated to the claim.
+//
+// a. A DRA driver representing each CPU core as a device would have
+//
+// {ResourceName: "cpu", allocationMultiplier: "2"} in its
+//
+// `nodeAllocatableResourceMappings`. If 4 devices are allocated to the claim,
+//
+// 4 * 2 CPUs would be considered as allocated and subtracted from the node's capacity.
+//
+// b. A GPU device that needs additional node memory per GPU allocation would
+//
+// have {ResourceName: "memory", allocationMultiplier: "2Gi"}.  Each allocated
+//
+// GPU device instance of this type will account for 2Gi of memory.
+//
+// 2.  If `capacityKey` IS set: `allocationMultiplier` is multiplied by the amount of that capacity consumed.
+//
+// The final node allocatable resource amount is `consumedCapacity[capacityKey]` * `allocationMultiplier`.
+//
+// For example, if a Device's capacity "dra.example.com/cores" is consumed,
+//
+// and each "core" provides 2 "cpu"s, the mapping would be:
+//
+// {ResourceName: "cpu", capacityKey: "dra.example.com/cores", allocationMultiplier: "2"}.
+//
+// If a claim consumes 8 "dra.example.com/cores", the CPU footprint is 8 * 2 = 16.
+func (d *NodeAllocatableResourceMappingDie) AllocationMultiplier(v *resource.Quantity) *NodeAllocatableResourceMappingDie {
+	return d.DieStamp(func(r *resourcev1.NodeAllocatableResourceMapping) {
+		r.AllocationMultiplier = v
+	})
+}
+
+// AllocationMultiplierString sets AllocationMultiplier by parsing the string as a Quantity. Panics if the string is not parsable.
+//
+// AllocationMultiplier is used as a multiplier for the allocated device count or the allocated capacity in the claim.
+//
+// It defaults to 1 if not specified. How the field is used also depends on whether `capacityKey` is set.
+//
+// 1.  If `capacityKey` is NOT set: `allocationMultiplier` multiplies the device count allocated to the claim.
+//
+// a. A DRA driver representing each CPU core as a device would have
+//
+// {ResourceName: "cpu", allocationMultiplier: "2"} in its
+//
+// `nodeAllocatableResourceMappings`. If 4 devices are allocated to the claim,
+//
+// 4 * 2 CPUs would be considered as allocated and subtracted from the node's capacity.
+//
+// b. A GPU device that needs additional node memory per GPU allocation would
+//
+// have {ResourceName: "memory", allocationMultiplier: "2Gi"}.  Each allocated
+//
+// GPU device instance of this type will account for 2Gi of memory.
+//
+// 2.  If `capacityKey` IS set: `allocationMultiplier` is multiplied by the amount of that capacity consumed.
+//
+// The final node allocatable resource amount is `consumedCapacity[capacityKey]` * `allocationMultiplier`.
+//
+// For example, if a Device's capacity "dra.example.com/cores" is consumed,
+//
+// and each "core" provides 2 "cpu"s, the mapping would be:
+//
+// {ResourceName: "cpu", capacityKey: "dra.example.com/cores", allocationMultiplier: "2"}.
+//
+// If a claim consumes 8 "dra.example.com/cores", the CPU footprint is 8 * 2 = 16.
+func (d *NodeAllocatableResourceMappingDie) AllocationMultiplierString(s string) *NodeAllocatableResourceMappingDie {
+	q := resource.MustParse(s)
+	return d.AllocationMultiplier(&q)
 }
 
 var CapacityRequestPolicyBlank = (&CapacityRequestPolicyDie{}).DieFeed(resourcev1.CapacityRequestPolicy{})
@@ -12521,9 +12931,25 @@ func (d *DeviceTaintDie) Effect(v resourcev1.DeviceTaintEffect) *DeviceTaintDie 
 	})
 }
 
-// TimeAdded represents the time at which the taint was added.
+// TimeAdded represents the time at which the taint was added or
+//
+// (only in a DeviceTaintRule) the effect was modified.
 //
 // Added automatically during create or update if not set.
+//
+// # In addition, in a DeviceTaintRule a value provided during
+//
+// an update gets replaced with the current time if the provided
+//
+// value is the same as the old one and the new effect is different.
+//
+// Changing the key and/or value while keeping the effect unchanged
+//
+// is possible and does not update the time stamp because the eviction
+//
+// which uses it is either already started (NoExecute) or
+//
+// not started yet (NoEffect, NoSchedule).
 func (d *DeviceTaintDie) TimeAdded(v *apismetav1.Time) *DeviceTaintDie {
 	return d.DieStamp(func(r *resourcev1.DeviceTaint) {
 		r.TimeAdded = v

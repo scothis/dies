@@ -287,7 +287,7 @@ func (d *WebhookClientConfigDie) DiePatch(patchType types.PatchType) ([]byte, er
 
 // ServiceDie mutates Service as a die.
 //
-// `service` is a reference to the service for this webhook. Either
+// service is a reference to the service for this webhook. Either
 //
 // `service` or `url` must be specified.
 //
@@ -300,7 +300,7 @@ func (d *WebhookClientConfigDie) ServiceDie(fn func(d *ServiceReferenceDie)) *We
 	})
 }
 
-// `url` gives the location of the webhook, in standard URL form
+// url gives the location of the webhook, in standard URL form
 //
 // (`scheme://host:port/path`). Exactly one of `url` or `service`
 //
@@ -345,7 +345,7 @@ func (d *WebhookClientConfigDie) URL(v *string) *WebhookClientConfigDie {
 	})
 }
 
-// `service` is a reference to the service for this webhook. Either
+// service is a reference to the service for this webhook. Either
 //
 // `service` or `url` must be specified.
 //
@@ -356,7 +356,7 @@ func (d *WebhookClientConfigDie) Service(v *admissionregistrationv1.ServiceRefer
 	})
 }
 
-// `caBundle` is a PEM encoded CA bundle which will be used to validate the webhook's server certificate.
+// caBundle is a PEM encoded CA bundle which will be used to validate the webhook's server certificate.
 //
 // If unspecified, system trust roots on the apiserver are used.
 func (d *WebhookClientConfigDie) CABundle(v []byte) *WebhookClientConfigDie {
@@ -611,7 +611,7 @@ func (d *ServiceReferenceDie) DiePatch(patchType types.PatchType) ([]byte, error
 	return patch.Create(d.seal, d.r, patchType)
 }
 
-// `namespace` is the namespace of the service.
+// namespace is the namespace of the service.
 //
 // Required
 func (d *ServiceReferenceDie) Namespace(v string) *ServiceReferenceDie {
@@ -620,7 +620,7 @@ func (d *ServiceReferenceDie) Namespace(v string) *ServiceReferenceDie {
 	})
 }
 
-// `name` is the name of the service.
+// name is the name of the service.
 //
 // Required
 func (d *ServiceReferenceDie) Name(v string) *ServiceReferenceDie {
@@ -629,7 +629,7 @@ func (d *ServiceReferenceDie) Name(v string) *ServiceReferenceDie {
 	})
 }
 
-// `path` is an optional URL path which will be sent in any request to
+// path is an optional URL path which will be sent in any request to
 //
 // this service.
 func (d *ServiceReferenceDie) Path(v *string) *ServiceReferenceDie {
@@ -638,7 +638,7 @@ func (d *ServiceReferenceDie) Path(v *string) *ServiceReferenceDie {
 	})
 }
 
-// If specified, the port on the service that hosting webhook.
+// port is the port on the service that hosts the webhook.
 //
 // Default to 443 for backward compatibility.
 //
@@ -895,7 +895,7 @@ func (d *RuleWithOperationsDie) DiePatch(patchType types.PatchType) ([]byte, err
 	return patch.Create(d.seal, d.r, patchType)
 }
 
-// Operations is the operations the admission hook cares about - CREATE, UPDATE, DELETE, CONNECT or *
+// operations is the operations the admission hook cares about - CREATE, UPDATE, DELETE, CONNECT or *
 //
 // for all of those operations and any future admission operations that are added.
 //
@@ -1163,7 +1163,7 @@ func (d *RuleDie) DiePatch(patchType types.PatchType) ([]byte, error) {
 	return patch.Create(d.seal, d.r, patchType)
 }
 
-// APIGroups is the API groups the resources belong to. '*' is all groups.
+// apiGroups is the API groups the resources belong to. '*' is all groups.
 //
 // If '*' is present, the length of the slice must be one.
 //
@@ -1174,7 +1174,7 @@ func (d *RuleDie) APIGroups(v ...string) *RuleDie {
 	})
 }
 
-// APIVersions is the API versions the resources belong to. '*' is all versions.
+// apiVersions is the API versions the resources belong to. '*' is all versions.
 //
 // If '*' is present, the length of the slice must be one.
 //
@@ -1185,7 +1185,7 @@ func (d *RuleDie) APIVersions(v ...string) *RuleDie {
 	})
 }
 
-// Resources is a list of resources this rule applies to.
+// resources is a list of resources this rule applies to.
 //
 // For example:
 //
@@ -1481,7 +1481,7 @@ func (d *MatchConditionDie) DiePatch(patchType types.PatchType) ([]byte, error) 
 	return patch.Create(d.seal, d.r, patchType)
 }
 
-// Name is an identifier for this match condition, used for strategic merging of MatchConditions,
+// name is an identifier for this match condition, used for strategic merging of MatchConditions,
 //
 // as well as providing an identifier for logging purposes. A good name should be descriptive of
 //
@@ -1502,7 +1502,7 @@ func (d *MatchConditionDie) Name(v string) *MatchConditionDie {
 	})
 }
 
-// Expression represents the expression which will be evaluated by CEL. Must evaluate to bool.
+// expression represents the expression which will be evaluated by CEL. Must evaluate to bool.
 //
 // CEL expressions have access to the contents of the AdmissionRequest and Authorizer, organized into CEL variables:
 //
@@ -1872,7 +1872,7 @@ func (d *MutatingWebhookConfigurationDie) MetadataDie(fn func(d *metav1.ObjectMe
 
 // WebhookDie mutates a single item in Webhooks matched by the nested field Name, appending a new item if no match is found.
 //
-// Webhooks is a list of webhooks and the affected resources and operations.
+// webhooks is a list of webhooks and the affected resources and operations.
 func (d *MutatingWebhookConfigurationDie) WebhookDie(v string, fn func(d *MutatingWebhookDie)) *MutatingWebhookConfigurationDie {
 	return d.DieStamp(func(r *admissionregistrationv1.MutatingWebhookConfiguration) {
 		for i := range r.Webhooks {
@@ -1890,7 +1890,7 @@ func (d *MutatingWebhookConfigurationDie) WebhookDie(v string, fn func(d *Mutati
 	})
 }
 
-// Webhooks is a list of webhooks and the affected resources and operations.
+// webhooks is a list of webhooks and the affected resources and operations.
 func (d *MutatingWebhookConfigurationDie) Webhooks(v ...admissionregistrationv1.MutatingWebhook) *MutatingWebhookConfigurationDie {
 	return d.DieStamp(func(r *admissionregistrationv1.MutatingWebhookConfiguration) {
 		r.Webhooks = v
@@ -2145,7 +2145,7 @@ func (d *MutatingWebhookDie) DiePatch(patchType types.PatchType) ([]byte, error)
 
 // ClientConfigDie mutates ClientConfig as a die.
 //
-// ClientConfig defines how to communicate with the hook.
+// clientConfig defines how to communicate with the hook.
 //
 // Required
 func (d *MutatingWebhookDie) ClientConfigDie(fn func(d *WebhookClientConfigDie)) *MutatingWebhookDie {
@@ -2158,7 +2158,7 @@ func (d *MutatingWebhookDie) ClientConfigDie(fn func(d *WebhookClientConfigDie))
 
 // NamespaceSelectorDie mutates NamespaceSelector as a die.
 //
-// # NamespaceSelector decides whether to run the webhook on an object based
+// namespaceSelector decides whether to run the webhook on an object based
 //
 // on whether the namespace for that object matches the selector. If the
 //
@@ -2245,7 +2245,7 @@ func (d *MutatingWebhookDie) NamespaceSelectorDie(fn func(d *metav1.LabelSelecto
 
 // ObjectSelectorDie mutates ObjectSelector as a die.
 //
-// # ObjectSelector decides whether to run the webhook based on if the
+// objectSelector decides whether to run the webhook based on if the
 //
 // object has matching labels. objectSelector is evaluated against both
 //
@@ -2276,7 +2276,7 @@ func (d *MutatingWebhookDie) ObjectSelectorDie(fn func(d *metav1.LabelSelectorDi
 
 // RulesDie replaces Rules by collecting the released value from each die passed.
 //
-// Rules describes what operations on what resources/subresources the webhook cares about.
+// rules describes what operations on what resources/subresources the webhook cares about.
 //
 // The webhook cares about an operation if it matches _any_ Rule.
 //
@@ -2298,7 +2298,7 @@ func (d *MutatingWebhookDie) RulesDie(v ...*RuleWithOperationsDie) *MutatingWebh
 
 // MatchConditionDie mutates a single item in MatchConditions matched by the nested field Name, appending a new item if no match is found.
 //
-// # MatchConditions is a list of conditions that must be met for a request to be sent to this
+// matchConditions is a list of conditions that must be met for a request to be sent to this
 //
 // webhook. Match conditions filter requests that have already been matched by the rules,
 //
@@ -2334,7 +2334,7 @@ func (d *MutatingWebhookDie) MatchConditionDie(v string, fn func(d *MatchConditi
 	})
 }
 
-// The name of the admission webhook.
+// name is the name of the admission webhook.
 //
 // # Name should be fully qualified, e.g., imagepolicy.kubernetes.io, where
 //
@@ -2349,7 +2349,7 @@ func (d *MutatingWebhookDie) Name(v string) *MutatingWebhookDie {
 	})
 }
 
-// ClientConfig defines how to communicate with the hook.
+// clientConfig defines how to communicate with the hook.
 //
 // Required
 func (d *MutatingWebhookDie) ClientConfig(v admissionregistrationv1.WebhookClientConfig) *MutatingWebhookDie {
@@ -2358,7 +2358,7 @@ func (d *MutatingWebhookDie) ClientConfig(v admissionregistrationv1.WebhookClien
 	})
 }
 
-// Rules describes what operations on what resources/subresources the webhook cares about.
+// rules describes what operations on what resources/subresources the webhook cares about.
 //
 // The webhook cares about an operation if it matches _any_ Rule.
 //
@@ -2375,7 +2375,7 @@ func (d *MutatingWebhookDie) Rules(v ...admissionregistrationv1.RuleWithOperatio
 	})
 }
 
-// FailurePolicy defines how unrecognized errors from the admission endpoint are handled -
+// failurePolicy defines how unrecognized errors from the admission endpoint are handled -
 //
 // allowed values are Ignore or Fail. Defaults to Fail.
 func (d *MutatingWebhookDie) FailurePolicy(v *admissionregistrationv1.FailurePolicyType) *MutatingWebhookDie {
@@ -2411,7 +2411,7 @@ func (d *MutatingWebhookDie) MatchPolicy(v *admissionregistrationv1.MatchPolicyT
 	})
 }
 
-// NamespaceSelector decides whether to run the webhook on an object based
+// namespaceSelector decides whether to run the webhook on an object based
 //
 // on whether the namespace for that object matches the selector. If the
 //
@@ -2494,7 +2494,7 @@ func (d *MutatingWebhookDie) NamespaceSelector(v *apismetav1.LabelSelector) *Mut
 	})
 }
 
-// ObjectSelector decides whether to run the webhook based on if the
+// objectSelector decides whether to run the webhook based on if the
 //
 // object has matching labels. objectSelector is evaluated against both
 //
@@ -2521,7 +2521,7 @@ func (d *MutatingWebhookDie) ObjectSelector(v *apismetav1.LabelSelector) *Mutati
 	})
 }
 
-// SideEffects states whether this webhook has side effects.
+// sideEffects states whether this webhook has side effects.
 //
 // Acceptable values are: None, NoneOnDryRun (webhooks created via v1beta1 may also specify Some or Unknown).
 //
@@ -2538,7 +2538,7 @@ func (d *MutatingWebhookDie) SideEffects(v *admissionregistrationv1.SideEffectCl
 	})
 }
 
-// TimeoutSeconds specifies the timeout for this webhook. After the timeout passes,
+// timeoutSeconds specifies the timeout for this webhook. After the timeout passes,
 //
 // the webhook call will be ignored or the API call will fail based on the
 //
@@ -2553,7 +2553,7 @@ func (d *MutatingWebhookDie) TimeoutSeconds(v *int32) *MutatingWebhookDie {
 	})
 }
 
-// AdmissionReviewVersions is an ordered list of preferred `AdmissionReview`
+// admissionReviewVersions is an ordered list of preferred `AdmissionReview`
 //
 // versions the Webhook expects. API server will try to use first version in
 //
@@ -2601,7 +2601,7 @@ func (d *MutatingWebhookDie) ReinvocationPolicy(v *admissionregistrationv1.Reinv
 	})
 }
 
-// MatchConditions is a list of conditions that must be met for a request to be sent to this
+// matchConditions is a list of conditions that must be met for a request to be sent to this
 //
 // webhook. Match conditions filter requests that have already been matched by the rules,
 //
@@ -2985,14 +2985,14 @@ func (d *ValidatingAdmissionPolicyDie) StatusDie(fn func(d *ValidatingAdmissionP
 	})
 }
 
-// Specification of the desired behavior of the ValidatingAdmissionPolicy.
+// spec defines the desired behavior of the ValidatingAdmissionPolicy.
 func (d *ValidatingAdmissionPolicyDie) Spec(v admissionregistrationv1.ValidatingAdmissionPolicySpec) *ValidatingAdmissionPolicyDie {
 	return d.DieStamp(func(r *admissionregistrationv1.ValidatingAdmissionPolicy) {
 		r.Spec = v
 	})
 }
 
-// The status of the ValidatingAdmissionPolicy, including warnings that are useful to determine if the policy
+// status represents the current status of the ValidatingAdmissionPolicy, including warnings that are useful to determine if the policy
 //
 // behaves in the expected way.
 //
@@ -3253,7 +3253,7 @@ func (d *ValidatingAdmissionPolicySpecDie) DiePatch(patchType types.PatchType) (
 
 // ParamKindDie mutates ParamKind as a die.
 //
-// ParamKind specifies the kind of resources used to parameterize this policy.
+// paramKind specifies the kind of resources used to parameterize this policy.
 //
 // If absent, there are no parameters for this policy and the param CEL variable will not be provided to validation expressions.
 //
@@ -3270,7 +3270,7 @@ func (d *ValidatingAdmissionPolicySpecDie) ParamKindDie(fn func(d *ParamKindDie)
 
 // MatchConstraintsDie mutates MatchConstraints as a die.
 //
-// MatchConstraints specifies what resources this policy is designed to validate.
+// matchConstraints specifies what resources this policy is designed to validate.
 //
 // The AdmissionPolicy cares about a request if it matches _all_ Constraints.
 //
@@ -3289,7 +3289,7 @@ func (d *ValidatingAdmissionPolicySpecDie) MatchConstraintsDie(fn func(d *MatchR
 
 // ValidationsDie replaces Validations by collecting the released value from each die passed.
 //
-// Validations contain CEL expressions which is used to apply the validation.
+// validations contain CEL expressions which is used to apply the validation.
 //
 // Validations and AuditAnnotations may not both be empty; a minimum of one Validations or AuditAnnotations is
 //
@@ -3323,7 +3323,7 @@ func (d *ValidatingAdmissionPolicySpecDie) AuditAnnotationsDie(v ...*AuditAnnota
 
 // MatchConditionDie mutates a single item in MatchConditions matched by the nested field Name, appending a new item if no match is found.
 //
-// MatchConditions is a list of conditions that must be met for a request to be validated.
+// matchConditions is a list of conditions that must be met for a request to be validated.
 //
 // Match conditions filter requests that have already been matched by the rules,
 //
@@ -3365,7 +3365,7 @@ func (d *ValidatingAdmissionPolicySpecDie) MatchConditionDie(v string, fn func(d
 
 // VariableDie mutates a single item in Variables matched by the nested field Name, appending a new item if no match is found.
 //
-// Variables contain definitions of variables that can be used in composition of other expressions.
+// variables contain definitions of variables that can be used in composition of other expressions.
 //
 // Each variable is defined as a named CEL expression.
 //
@@ -3393,7 +3393,7 @@ func (d *ValidatingAdmissionPolicySpecDie) VariableDie(v string, fn func(d *Vari
 	})
 }
 
-// ParamKind specifies the kind of resources used to parameterize this policy.
+// paramKind specifies the kind of resources used to parameterize this policy.
 //
 // If absent, there are no parameters for this policy and the param CEL variable will not be provided to validation expressions.
 //
@@ -3406,7 +3406,7 @@ func (d *ValidatingAdmissionPolicySpecDie) ParamKind(v *admissionregistrationv1.
 	})
 }
 
-// MatchConstraints specifies what resources this policy is designed to validate.
+// matchConstraints specifies what resources this policy is designed to validate.
 //
 // The AdmissionPolicy cares about a request if it matches _all_ Constraints.
 //
@@ -3421,7 +3421,7 @@ func (d *ValidatingAdmissionPolicySpecDie) MatchConstraints(v *admissionregistra
 	})
 }
 
-// Validations contain CEL expressions which is used to apply the validation.
+// validations contain CEL expressions which is used to apply the validation.
 //
 // Validations and AuditAnnotations may not both be empty; a minimum of one Validations or AuditAnnotations is
 //
@@ -3468,7 +3468,7 @@ func (d *ValidatingAdmissionPolicySpecDie) AuditAnnotations(v ...admissionregist
 	})
 }
 
-// MatchConditions is a list of conditions that must be met for a request to be validated.
+// matchConditions is a list of conditions that must be met for a request to be validated.
 //
 // Match conditions filter requests that have already been matched by the rules,
 //
@@ -3497,7 +3497,7 @@ func (d *ValidatingAdmissionPolicySpecDie) MatchConditions(v ...admissionregistr
 	})
 }
 
-// Variables contain definitions of variables that can be used in composition of other expressions.
+// variables contain definitions of variables that can be used in composition of other expressions.
 //
 // Each variable is defined as a named CEL expression.
 //
@@ -3760,7 +3760,7 @@ func (d *ParamKindDie) DiePatch(patchType types.PatchType) ([]byte, error) {
 	return patch.Create(d.seal, d.r, patchType)
 }
 
-// APIVersion is the API group version the resources belong to.
+// apiVersion is the API group version the resources belong to.
 //
 // In format of "group/version".
 //
@@ -3771,7 +3771,7 @@ func (d *ParamKindDie) APIVersion(v string) *ParamKindDie {
 	})
 }
 
-// Kind is the API kind the resources belong to.
+// kind is the API kind the resources belong to.
 //
 // Required.
 func (d *ParamKindDie) Kind(v string) *ParamKindDie {
@@ -4028,7 +4028,7 @@ func (d *MatchResourcesDie) DiePatch(patchType types.PatchType) ([]byte, error) 
 
 // NamespaceSelectorDie mutates NamespaceSelector as a die.
 //
-// # NamespaceSelector decides whether to run the admission control policy on an object based
+// namespaceSelector decides whether to run the admission control policy on an object based
 //
 // on whether the namespace for that object matches the selector. If the
 //
@@ -4115,7 +4115,7 @@ func (d *MatchResourcesDie) NamespaceSelectorDie(fn func(d *metav1.LabelSelector
 
 // ObjectSelectorDie mutates ObjectSelector as a die.
 //
-// # ObjectSelector decides whether to run the validation based on if the
+// objectSelector decides whether to run the validation based on if the
 //
 // object has matching labels. objectSelector is evaluated against both
 //
@@ -4146,7 +4146,7 @@ func (d *MatchResourcesDie) ObjectSelectorDie(fn func(d *metav1.LabelSelectorDie
 
 // ResourceRulesDie replaces ResourceRules by collecting the released value from each die passed.
 //
-// ResourceRules describes what operations on what resources/subresources the ValidatingAdmissionPolicy matches.
+// resourceRules describes what operations on what resources/subresources the ValidatingAdmissionPolicy matches.
 //
 // The policy cares about an operation if it matches _any_ Rule.
 func (d *MatchResourcesDie) ResourceRulesDie(v ...*NamedRuleWithOperationsDie) *MatchResourcesDie {
@@ -4160,7 +4160,7 @@ func (d *MatchResourcesDie) ResourceRulesDie(v ...*NamedRuleWithOperationsDie) *
 
 // ExcludeResourceRulesDie replaces ExcludeResourceRules by collecting the released value from each die passed.
 //
-// ExcludeResourceRules describes what operations on what resources/subresources the ValidatingAdmissionPolicy should not care about.
+// excludeResourceRules describes what operations on what resources/subresources the ValidatingAdmissionPolicy should not care about.
 //
 // The exclude rules take precedence over include rules (if a resource matches both, it is excluded)
 func (d *MatchResourcesDie) ExcludeResourceRulesDie(v ...*NamedRuleWithOperationsDie) *MatchResourcesDie {
@@ -4172,7 +4172,7 @@ func (d *MatchResourcesDie) ExcludeResourceRulesDie(v ...*NamedRuleWithOperation
 	})
 }
 
-// NamespaceSelector decides whether to run the admission control policy on an object based
+// namespaceSelector decides whether to run the admission control policy on an object based
 //
 // on whether the namespace for that object matches the selector. If the
 //
@@ -4255,7 +4255,7 @@ func (d *MatchResourcesDie) NamespaceSelector(v *apismetav1.LabelSelector) *Matc
 	})
 }
 
-// ObjectSelector decides whether to run the validation based on if the
+// objectSelector decides whether to run the validation based on if the
 //
 // object has matching labels. objectSelector is evaluated against both
 //
@@ -4282,7 +4282,7 @@ func (d *MatchResourcesDie) ObjectSelector(v *apismetav1.LabelSelector) *MatchRe
 	})
 }
 
-// ResourceRules describes what operations on what resources/subresources the ValidatingAdmissionPolicy matches.
+// resourceRules describes what operations on what resources/subresources the ValidatingAdmissionPolicy matches.
 //
 // The policy cares about an operation if it matches _any_ Rule.
 func (d *MatchResourcesDie) ResourceRules(v ...admissionregistrationv1.NamedRuleWithOperations) *MatchResourcesDie {
@@ -4291,7 +4291,7 @@ func (d *MatchResourcesDie) ResourceRules(v ...admissionregistrationv1.NamedRule
 	})
 }
 
-// ExcludeResourceRules describes what operations on what resources/subresources the ValidatingAdmissionPolicy should not care about.
+// excludeResourceRules describes what operations on what resources/subresources the ValidatingAdmissionPolicy should not care about.
 //
 // The exclude rules take precedence over include rules (if a resource matches both, it is excluded)
 func (d *MatchResourcesDie) ExcludeResourceRules(v ...admissionregistrationv1.NamedRuleWithOperations) *MatchResourcesDie {
@@ -4573,7 +4573,7 @@ func (d *NamedRuleWithOperationsDie) DiePatch(patchType types.PatchType) ([]byte
 	return patch.Create(d.seal, d.r, patchType)
 }
 
-// ResourceNames is an optional white list of names that the rule applies to.  An empty set means that everything is allowed.
+// resourceNames is an optional white list of names that the rule applies to.  An empty set means that everything is allowed.
 func (d *NamedRuleWithOperationsDie) ResourceNames(v ...string) *NamedRuleWithOperationsDie {
 	return d.DieStamp(func(r *admissionregistrationv1.NamedRuleWithOperations) {
 		r.ResourceNames = v
@@ -4833,7 +4833,7 @@ func (d *ValidationDie) DiePatch(patchType types.PatchType) ([]byte, error) {
 	return patch.Create(d.seal, d.r, patchType)
 }
 
-// Expression represents the expression which will be evaluated by CEL.
+// expression represents the expression which will be evaluated by CEL.
 //
 // ref: https://github.com/google/cel-spec
 //
@@ -4912,7 +4912,7 @@ func (d *ValidationDie) Expression(v string) *ValidationDie {
 	})
 }
 
-// Message represents the message displayed when validation fails. The message is required if the Expression contains
+// message represents the message displayed when validation fails. The message is required if the Expression contains
 //
 // line breaks. The message must not contain line breaks.
 //
@@ -4931,7 +4931,7 @@ func (d *ValidationDie) Message(v string) *ValidationDie {
 	})
 }
 
-// Reason represents a machine-readable description of why this validation failed.
+// reason represents a machine-readable description of why this validation failed.
 //
 // # If this is the first validation in the list to fail, this reason, as well as the
 //
@@ -5525,7 +5525,7 @@ func (d *VariableDie) DiePatch(patchType types.PatchType) ([]byte, error) {
 	return patch.Create(d.seal, d.r, patchType)
 }
 
-// Name is the name of the variable. The name must be a valid CEL identifier and unique among all variables.
+// name is the name of the variable. The name must be a valid CEL identifier and unique among all variables.
 //
 // The variable can be accessed in other expressions through `variables`
 //
@@ -5536,7 +5536,7 @@ func (d *VariableDie) Name(v string) *VariableDie {
 	})
 }
 
-// Expression is the expression that will be evaluated as the value of the variable.
+// expression is the expression that will be evaluated as the value of the variable.
 //
 // The CEL expression has access to the same identifiers as the CEL expressions in Validation.
 func (d *VariableDie) Expression(v string) *VariableDie {
@@ -5793,7 +5793,7 @@ func (d *ValidatingAdmissionPolicyStatusDie) DiePatch(patchType types.PatchType)
 
 // TypeCheckingDie mutates TypeChecking as a die.
 //
-// The results of type checking for each expression.
+// typeChecking contains the results of type checking for each expression.
 //
 // Presence of this field indicates the completion of the type checking.
 func (d *ValidatingAdmissionPolicyStatusDie) TypeCheckingDie(fn func(d *TypeCheckingDie)) *ValidatingAdmissionPolicyStatusDie {
@@ -5806,7 +5806,7 @@ func (d *ValidatingAdmissionPolicyStatusDie) TypeCheckingDie(fn func(d *TypeChec
 
 // ConditionsDie replaces Conditions by collecting the released value from each die passed.
 //
-// The conditions represent the latest available observations of a policy's current state.
+// conditions represent the latest available observations of a policy's current state.
 func (d *ValidatingAdmissionPolicyStatusDie) ConditionsDie(v ...*metav1.ConditionDie) *ValidatingAdmissionPolicyStatusDie {
 	return d.DieStamp(func(r *admissionregistrationv1.ValidatingAdmissionPolicyStatus) {
 		r.Conditions = make([]apismetav1.Condition, len(v))
@@ -5816,14 +5816,14 @@ func (d *ValidatingAdmissionPolicyStatusDie) ConditionsDie(v ...*metav1.Conditio
 	})
 }
 
-// The generation observed by the controller.
+// observedGeneration is the generation observed by the controller.
 func (d *ValidatingAdmissionPolicyStatusDie) ObservedGeneration(v int64) *ValidatingAdmissionPolicyStatusDie {
 	return d.DieStamp(func(r *admissionregistrationv1.ValidatingAdmissionPolicyStatus) {
 		r.ObservedGeneration = v
 	})
 }
 
-// The results of type checking for each expression.
+// typeChecking contains the results of type checking for each expression.
 //
 // Presence of this field indicates the completion of the type checking.
 func (d *ValidatingAdmissionPolicyStatusDie) TypeChecking(v *admissionregistrationv1.TypeChecking) *ValidatingAdmissionPolicyStatusDie {
@@ -5832,7 +5832,7 @@ func (d *ValidatingAdmissionPolicyStatusDie) TypeChecking(v *admissionregistrati
 	})
 }
 
-// The conditions represent the latest available observations of a policy's current state.
+// conditions represent the latest available observations of a policy's current state.
 func (d *ValidatingAdmissionPolicyStatusDie) Conditions(v ...apismetav1.Condition) *ValidatingAdmissionPolicyStatusDie {
 	return d.DieStamp(func(r *admissionregistrationv1.ValidatingAdmissionPolicyStatus) {
 		r.Conditions = v
@@ -6087,7 +6087,7 @@ func (d *TypeCheckingDie) DiePatch(patchType types.PatchType) ([]byte, error) {
 
 // ExpressionWarningsDie replaces ExpressionWarnings by collecting the released value from each die passed.
 //
-// The type checking warnings for each expression.
+// expressionWarnings contains the type checking warnings for each expression.
 func (d *TypeCheckingDie) ExpressionWarningsDie(v ...*ExpressionWarningDie) *TypeCheckingDie {
 	return d.DieStamp(func(r *admissionregistrationv1.TypeChecking) {
 		r.ExpressionWarnings = make([]admissionregistrationv1.ExpressionWarning, len(v))
@@ -6097,7 +6097,7 @@ func (d *TypeCheckingDie) ExpressionWarningsDie(v ...*ExpressionWarningDie) *Typ
 	})
 }
 
-// The type checking warnings for each expression.
+// expressionWarnings contains the type checking warnings for each expression.
 func (d *TypeCheckingDie) ExpressionWarnings(v ...admissionregistrationv1.ExpressionWarning) *TypeCheckingDie {
 	return d.DieStamp(func(r *admissionregistrationv1.TypeChecking) {
 		r.ExpressionWarnings = v
@@ -6350,7 +6350,7 @@ func (d *ExpressionWarningDie) DiePatch(patchType types.PatchType) ([]byte, erro
 	return patch.Create(d.seal, d.r, patchType)
 }
 
-// The path to the field that refers the expression.
+// fieldRef is the path to the field that refers to the expression.
 //
 // # For example, the reference to the expression of the first item of
 //
@@ -6361,7 +6361,7 @@ func (d *ExpressionWarningDie) FieldRef(v string) *ExpressionWarningDie {
 	})
 }
 
-// The content of type checking information in a human-readable form.
+// warning contains the content of type checking information in a human-readable form.
 //
 // # Each line of the warning contains the type that the expression is checked
 //
@@ -6722,7 +6722,7 @@ func (d *ValidatingAdmissionPolicyBindingDie) SpecDie(fn func(d *ValidatingAdmis
 	})
 }
 
-// Specification of the desired behavior of the ValidatingAdmissionPolicyBinding.
+// spec defines the desired behavior of the ValidatingAdmissionPolicyBinding.
 func (d *ValidatingAdmissionPolicyBindingDie) Spec(v admissionregistrationv1.ValidatingAdmissionPolicyBindingSpec) *ValidatingAdmissionPolicyBindingDie {
 	return d.DieStamp(func(r *admissionregistrationv1.ValidatingAdmissionPolicyBinding) {
 		r.Spec = v
@@ -6994,7 +6994,7 @@ func (d *ValidatingAdmissionPolicyBindingSpecDie) ParamRefDie(fn func(d *ParamRe
 
 // MatchResourcesDie mutates MatchResources as a die.
 //
-// MatchResources declares what resources match this binding and will be validated by it.
+// matchResources declares what resources match this binding and will be validated by it.
 //
 // Note that this is intersected with the policy's matchConstraints, so only requests that are matched by the policy can be selected by this.
 //
@@ -7011,7 +7011,7 @@ func (d *ValidatingAdmissionPolicyBindingSpecDie) MatchResourcesDie(fn func(d *M
 	})
 }
 
-// PolicyName references a ValidatingAdmissionPolicy name which the ValidatingAdmissionPolicyBinding binds to.
+// policyName references a ValidatingAdmissionPolicy name which the ValidatingAdmissionPolicyBinding binds to.
 //
 // # If the referenced resource does not exist, this binding is considered invalid and will be ignored
 //
@@ -7035,7 +7035,7 @@ func (d *ValidatingAdmissionPolicyBindingSpecDie) ParamRef(v *admissionregistrat
 	})
 }
 
-// MatchResources declares what resources match this binding and will be validated by it.
+// matchResources declares what resources match this binding and will be validated by it.
 //
 // Note that this is intersected with the policy's matchConstraints, so only requests that are matched by the policy can be selected by this.
 //
@@ -7443,7 +7443,7 @@ func (d *ParamRefDie) Selector(v *apismetav1.LabelSelector) *ParamRefDie {
 	})
 }
 
-// `parameterNotFoundAction` controls the behavior of the binding when the resource
+// parameterNotFoundAction controls the behavior of the binding when the resource
 //
 // exists, and name or selector is valid, but there are no parameters
 //
@@ -7807,7 +7807,7 @@ func (d *ValidatingWebhookConfigurationDie) MetadataDie(fn func(d *metav1.Object
 
 // WebhookDie mutates a single item in Webhooks matched by the nested field Name, appending a new item if no match is found.
 //
-// Webhooks is a list of webhooks and the affected resources and operations.
+// webhooks is a list of webhooks and the affected resources and operations.
 func (d *ValidatingWebhookConfigurationDie) WebhookDie(v string, fn func(d *ValidatingWebhookDie)) *ValidatingWebhookConfigurationDie {
 	return d.DieStamp(func(r *admissionregistrationv1.ValidatingWebhookConfiguration) {
 		for i := range r.Webhooks {
@@ -7825,7 +7825,7 @@ func (d *ValidatingWebhookConfigurationDie) WebhookDie(v string, fn func(d *Vali
 	})
 }
 
-// Webhooks is a list of webhooks and the affected resources and operations.
+// webhooks is a list of webhooks and the affected resources and operations.
 func (d *ValidatingWebhookConfigurationDie) Webhooks(v ...admissionregistrationv1.ValidatingWebhook) *ValidatingWebhookConfigurationDie {
 	return d.DieStamp(func(r *admissionregistrationv1.ValidatingWebhookConfiguration) {
 		r.Webhooks = v
@@ -8080,7 +8080,7 @@ func (d *ValidatingWebhookDie) DiePatch(patchType types.PatchType) ([]byte, erro
 
 // ClientConfigDie mutates ClientConfig as a die.
 //
-// ClientConfig defines how to communicate with the hook.
+// clientConfig defines how to communicate with the hook.
 //
 // Required
 func (d *ValidatingWebhookDie) ClientConfigDie(fn func(d *WebhookClientConfigDie)) *ValidatingWebhookDie {
@@ -8093,7 +8093,7 @@ func (d *ValidatingWebhookDie) ClientConfigDie(fn func(d *WebhookClientConfigDie
 
 // NamespaceSelectorDie mutates NamespaceSelector as a die.
 //
-// # NamespaceSelector decides whether to run the webhook on an object based
+// namespaceSelector decides whether to run the webhook on an object based
 //
 // on whether the namespace for that object matches the selector. If the
 //
@@ -8180,7 +8180,7 @@ func (d *ValidatingWebhookDie) NamespaceSelectorDie(fn func(d *metav1.LabelSelec
 
 // ObjectSelectorDie mutates ObjectSelector as a die.
 //
-// # ObjectSelector decides whether to run the webhook based on if the
+// objectSelector decides whether to run the webhook based on if the
 //
 // object has matching labels. objectSelector is evaluated against both
 //
@@ -8211,7 +8211,7 @@ func (d *ValidatingWebhookDie) ObjectSelectorDie(fn func(d *metav1.LabelSelector
 
 // RulesDie replaces Rules by collecting the released value from each die passed.
 //
-// Rules describes what operations on what resources/subresources the webhook cares about.
+// rules describes what operations on what resources/subresources the webhook cares about.
 //
 // The webhook cares about an operation if it matches _any_ Rule.
 //
@@ -8233,7 +8233,7 @@ func (d *ValidatingWebhookDie) RulesDie(v ...*RuleWithOperationsDie) *Validating
 
 // MatchConditionDie mutates a single item in MatchConditions matched by the nested field Name, appending a new item if no match is found.
 //
-// # MatchConditions is a list of conditions that must be met for a request to be sent to this
+// matchConditions is a list of conditions that must be met for a request to be sent to this
 //
 // webhook. Match conditions filter requests that have already been matched by the rules,
 //
@@ -8269,7 +8269,7 @@ func (d *ValidatingWebhookDie) MatchConditionDie(v string, fn func(d *MatchCondi
 	})
 }
 
-// The name of the admission webhook.
+// name is the name of the admission webhook.
 //
 // # Name should be fully qualified, e.g., imagepolicy.kubernetes.io, where
 //
@@ -8284,7 +8284,7 @@ func (d *ValidatingWebhookDie) Name(v string) *ValidatingWebhookDie {
 	})
 }
 
-// ClientConfig defines how to communicate with the hook.
+// clientConfig defines how to communicate with the hook.
 //
 // Required
 func (d *ValidatingWebhookDie) ClientConfig(v admissionregistrationv1.WebhookClientConfig) *ValidatingWebhookDie {
@@ -8293,7 +8293,7 @@ func (d *ValidatingWebhookDie) ClientConfig(v admissionregistrationv1.WebhookCli
 	})
 }
 
-// Rules describes what operations on what resources/subresources the webhook cares about.
+// rules describes what operations on what resources/subresources the webhook cares about.
 //
 // The webhook cares about an operation if it matches _any_ Rule.
 //
@@ -8310,7 +8310,7 @@ func (d *ValidatingWebhookDie) Rules(v ...admissionregistrationv1.RuleWithOperat
 	})
 }
 
-// FailurePolicy defines how unrecognized errors from the admission endpoint are handled -
+// failurePolicy defines how unrecognized errors from the admission endpoint are handled -
 //
 // allowed values are Ignore or Fail. Defaults to Fail.
 func (d *ValidatingWebhookDie) FailurePolicy(v *admissionregistrationv1.FailurePolicyType) *ValidatingWebhookDie {
@@ -8346,7 +8346,7 @@ func (d *ValidatingWebhookDie) MatchPolicy(v *admissionregistrationv1.MatchPolic
 	})
 }
 
-// NamespaceSelector decides whether to run the webhook on an object based
+// namespaceSelector decides whether to run the webhook on an object based
 //
 // on whether the namespace for that object matches the selector. If the
 //
@@ -8429,7 +8429,7 @@ func (d *ValidatingWebhookDie) NamespaceSelector(v *apismetav1.LabelSelector) *V
 	})
 }
 
-// ObjectSelector decides whether to run the webhook based on if the
+// objectSelector decides whether to run the webhook based on if the
 //
 // object has matching labels. objectSelector is evaluated against both
 //
@@ -8456,7 +8456,7 @@ func (d *ValidatingWebhookDie) ObjectSelector(v *apismetav1.LabelSelector) *Vali
 	})
 }
 
-// SideEffects states whether this webhook has side effects.
+// sideEffects states whether this webhook has side effects.
 //
 // Acceptable values are: None, NoneOnDryRun (webhooks created via v1beta1 may also specify Some or Unknown).
 //
@@ -8473,7 +8473,7 @@ func (d *ValidatingWebhookDie) SideEffects(v *admissionregistrationv1.SideEffect
 	})
 }
 
-// TimeoutSeconds specifies the timeout for this webhook. After the timeout passes,
+// timeoutSeconds specifies the timeout for this webhook. After the timeout passes,
 //
 // the webhook call will be ignored or the API call will fail based on the
 //
@@ -8488,7 +8488,7 @@ func (d *ValidatingWebhookDie) TimeoutSeconds(v *int32) *ValidatingWebhookDie {
 	})
 }
 
-// AdmissionReviewVersions is an ordered list of preferred `AdmissionReview`
+// admissionReviewVersions is an ordered list of preferred `AdmissionReview`
 //
 // versions the Webhook expects. API server will try to use first version in
 //
@@ -8507,7 +8507,7 @@ func (d *ValidatingWebhookDie) AdmissionReviewVersions(v ...string) *ValidatingW
 	})
 }
 
-// MatchConditions is a list of conditions that must be met for a request to be sent to this
+// matchConditions is a list of conditions that must be met for a request to be sent to this
 //
 // webhook. Match conditions filter requests that have already been matched by the rules,
 //

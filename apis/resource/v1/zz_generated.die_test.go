@@ -298,7 +298,7 @@ func TestResourcePoolDie_MissingMethods(t *testingx.T) {
 
 func TestDeviceDie_MissingMethods(t *testingx.T) {
 	die := DeviceBlank
-	ignore := []string{"Attributes", "Capacity"}
+	ignore := []string{"Attributes", "Capacity", "NodeAllocatableResourceMappings"}
 	diff := testing.DieFieldDiff(die).Delete(ignore...)
 	if diff.Len() != 0 {
 		t.Errorf("found missing fields for DeviceDie: %s", diff.List())
@@ -320,6 +320,15 @@ func TestDeviceCapacityDie_MissingMethods(t *testingx.T) {
 	diff := testing.DieFieldDiff(die).Delete(ignore...)
 	if diff.Len() != 0 {
 		t.Errorf("found missing fields for DeviceCapacityDie: %s", diff.List())
+	}
+}
+
+func TestNodeAllocatableResourceMappingDie_MissingMethods(t *testingx.T) {
+	die := NodeAllocatableResourceMappingBlank
+	ignore := []string{}
+	diff := testing.DieFieldDiff(die).Delete(ignore...)
+	if diff.Len() != 0 {
+		t.Errorf("found missing fields for NodeAllocatableResourceMappingDie: %s", diff.List())
 	}
 }
 

@@ -390,7 +390,7 @@ func (d *MutatingAdmissionPolicyDie) SpecDie(fn func(d *MutatingAdmissionPolicyS
 	})
 }
 
-// Specification of the desired behavior of the MutatingAdmissionPolicy.
+// spec defines the desired behavior of the MutatingAdmissionPolicy.
 func (d *MutatingAdmissionPolicyDie) Spec(v admissionregistrationv1alpha1.MutatingAdmissionPolicySpec) *MutatingAdmissionPolicyDie {
 	return d.DieStamp(func(r *admissionregistrationv1alpha1.MutatingAdmissionPolicy) {
 		r.Spec = v
@@ -1150,7 +1150,7 @@ func (d *ParamKindDie) DiePatch(patchType types.PatchType) ([]byte, error) {
 	return patch.Create(d.seal, d.r, patchType)
 }
 
-// APIVersion is the API group version the resources belong to.
+// apiVersion is the API group version the resources belong to.
 //
 // In format of "group/version".
 //
@@ -1161,7 +1161,7 @@ func (d *ParamKindDie) APIVersion(v string) *ParamKindDie {
 	})
 }
 
-// Kind is the API kind the resources belong to.
+// kind is the API kind the resources belong to.
 //
 // Required.
 func (d *ParamKindDie) Kind(v string) *ParamKindDie {
@@ -1418,7 +1418,7 @@ func (d *MatchResourcesDie) DiePatch(patchType types.PatchType) ([]byte, error) 
 
 // NamespaceSelectorDie mutates NamespaceSelector as a die.
 //
-// # NamespaceSelector decides whether to run the admission control policy on an object based
+// namespaceSelector decides whether to run the admission control policy on an object based
 //
 // on whether the namespace for that object matches the selector. If the
 //
@@ -1505,7 +1505,7 @@ func (d *MatchResourcesDie) NamespaceSelectorDie(fn func(d *v1.LabelSelectorDie)
 
 // ObjectSelectorDie mutates ObjectSelector as a die.
 //
-// # ObjectSelector decides whether to run the policy based on if the
+// objectSelector decides whether to run the policy based on if the
 //
 // object has matching labels. objectSelector is evaluated against both
 //
@@ -1536,7 +1536,7 @@ func (d *MatchResourcesDie) ObjectSelectorDie(fn func(d *v1.LabelSelectorDie)) *
 
 // ResourceRulesDie replaces ResourceRules by collecting the released value from each die passed.
 //
-// ResourceRules describes what operations on what resources/subresources the admission policy matches.
+// resourceRules describes what operations on what resources/subresources the admission policy matches.
 //
 // The policy cares about an operation if it matches _any_ Rule.
 func (d *MatchResourcesDie) ResourceRulesDie(v ...*NamedRuleWithOperationsDie) *MatchResourcesDie {
@@ -1550,7 +1550,7 @@ func (d *MatchResourcesDie) ResourceRulesDie(v ...*NamedRuleWithOperationsDie) *
 
 // ExcludeResourceRulesDie replaces ExcludeResourceRules by collecting the released value from each die passed.
 //
-// ExcludeResourceRules describes what operations on what resources/subresources the policy should not care about.
+// excludeResourceRules describes what operations on what resources/subresources the policy should not care about.
 //
 // The exclude rules take precedence over include rules (if a resource matches both, it is excluded)
 func (d *MatchResourcesDie) ExcludeResourceRulesDie(v ...*NamedRuleWithOperationsDie) *MatchResourcesDie {
@@ -1562,7 +1562,7 @@ func (d *MatchResourcesDie) ExcludeResourceRulesDie(v ...*NamedRuleWithOperation
 	})
 }
 
-// NamespaceSelector decides whether to run the admission control policy on an object based
+// namespaceSelector decides whether to run the admission control policy on an object based
 //
 // on whether the namespace for that object matches the selector. If the
 //
@@ -1645,7 +1645,7 @@ func (d *MatchResourcesDie) NamespaceSelector(v *metav1.LabelSelector) *MatchRes
 	})
 }
 
-// ObjectSelector decides whether to run the policy based on if the
+// objectSelector decides whether to run the policy based on if the
 //
 // object has matching labels. objectSelector is evaluated against both
 //
@@ -1672,7 +1672,7 @@ func (d *MatchResourcesDie) ObjectSelector(v *metav1.LabelSelector) *MatchResour
 	})
 }
 
-// ResourceRules describes what operations on what resources/subresources the admission policy matches.
+// resourceRules describes what operations on what resources/subresources the admission policy matches.
 //
 // The policy cares about an operation if it matches _any_ Rule.
 func (d *MatchResourcesDie) ResourceRules(v ...admissionregistrationv1alpha1.NamedRuleWithOperations) *MatchResourcesDie {
@@ -1681,7 +1681,7 @@ func (d *MatchResourcesDie) ResourceRules(v ...admissionregistrationv1alpha1.Nam
 	})
 }
 
-// ExcludeResourceRules describes what operations on what resources/subresources the policy should not care about.
+// excludeResourceRules describes what operations on what resources/subresources the policy should not care about.
 //
 // The exclude rules take precedence over include rules (if a resource matches both, it is excluded)
 func (d *MatchResourcesDie) ExcludeResourceRules(v ...admissionregistrationv1alpha1.NamedRuleWithOperations) *MatchResourcesDie {
@@ -2211,7 +2211,7 @@ func (d *VariableDie) DiePatch(patchType types.PatchType) ([]byte, error) {
 	return patch.Create(d.seal, d.r, patchType)
 }
 
-// Name is the name of the variable. The name must be a valid CEL identifier and unique among all variables.
+// name is the name of the variable. The name must be a valid CEL identifier and unique among all variables.
 //
 // The variable can be accessed in other expressions through `variables`
 //
@@ -2222,7 +2222,7 @@ func (d *VariableDie) Name(v string) *VariableDie {
 	})
 }
 
-// Expression is the expression that will be evaluated as the value of the variable.
+// expression is the expression that will be evaluated as the value of the variable.
 //
 // The CEL expression has access to the same identifiers as the CEL expressions in Validation.
 func (d *VariableDie) Expression(v string) *VariableDie {
@@ -2797,7 +2797,7 @@ func (d *NamedRuleWithOperationsDie) RuleWithOperationsDie(fn func(d *admissionr
 	})
 }
 
-// ResourceNames is an optional white list of names that the rule applies to.  An empty set means that everything is allowed.
+// resourceNames is an optional white list of names that the rule applies to.  An empty set means that everything is allowed.
 func (d *NamedRuleWithOperationsDie) ResourceNames(v ...string) *NamedRuleWithOperationsDie {
 	return d.DieStamp(func(r *admissionregistrationv1alpha1.NamedRuleWithOperations) {
 		r.ResourceNames = v

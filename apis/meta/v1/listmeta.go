@@ -21,4 +21,8 @@ import (
 )
 
 // +die
+// +die:field:name=ShardInfo,die=ShardInfoDie,pointer=true
 type _ = metav1.ListMeta
+
+// +die
+type _ = metav1.ShardInfo

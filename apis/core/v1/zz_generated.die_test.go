@@ -521,6 +521,24 @@ func TestVolumeMountStatusDie_MissingMethods(t *testingx.T) {
 	}
 }
 
+func TestVolumeStatusDie_MissingMethods(t *testingx.T) {
+	die := VolumeStatusBlank
+	ignore := []string{}
+	diff := testing.DieFieldDiff(die).Delete(ignore...)
+	if diff.Len() != 0 {
+		t.Errorf("found missing fields for VolumeStatusDie: %s", diff.List())
+	}
+}
+
+func TestImageVolumeStatusDie_MissingMethods(t *testingx.T) {
+	die := ImageVolumeStatusBlank
+	ignore := []string{}
+	diff := testing.DieFieldDiff(die).Delete(ignore...)
+	if diff.Len() != 0 {
+		t.Errorf("found missing fields for ImageVolumeStatusDie: %s", diff.List())
+	}
+}
+
 func TestEndpointsDie_MissingMethods(t *testingx.T) {
 	die := EndpointsBlank
 	ignore := []string{"TypeMeta", "ObjectMeta"}
@@ -1124,12 +1142,12 @@ func TestPodOSDie_MissingMethods(t *testingx.T) {
 	}
 }
 
-func TestWorkloadReferenceDie_MissingMethods(t *testingx.T) {
-	die := WorkloadReferenceBlank
+func TestPodSchedulingGroupDie_MissingMethods(t *testingx.T) {
+	die := PodSchedulingGroupBlank
 	ignore := []string{}
 	diff := testing.DieFieldDiff(die).Delete(ignore...)
 	if diff.Len() != 0 {
-		t.Errorf("found missing fields for WorkloadReferenceDie: %s", diff.List())
+		t.Errorf("found missing fields for PodSchedulingGroupDie: %s", diff.List())
 	}
 }
 
@@ -1157,6 +1175,15 @@ func TestContainerExtendedResourceRequestDie_MissingMethods(t *testingx.T) {
 	diff := testing.DieFieldDiff(die).Delete(ignore...)
 	if diff.Len() != 0 {
 		t.Errorf("found missing fields for ContainerExtendedResourceRequestDie: %s", diff.List())
+	}
+}
+
+func TestNodeAllocatableResourceClaimStatusDie_MissingMethods(t *testingx.T) {
+	die := NodeAllocatableResourceClaimStatusBlank
+	ignore := []string{"Resources"}
+	diff := testing.DieFieldDiff(die).Delete(ignore...)
+	if diff.Len() != 0 {
+		t.Errorf("found missing fields for NodeAllocatableResourceClaimStatusDie: %s", diff.List())
 	}
 }
 
@@ -1688,6 +1715,15 @@ func TestEphemeralVolumeSourceDie_MissingMethods(t *testingx.T) {
 	diff := testing.DieFieldDiff(die).Delete(ignore...)
 	if diff.Len() != 0 {
 		t.Errorf("found missing fields for EphemeralVolumeSourceDie: %s", diff.List())
+	}
+}
+
+func TestImageVolumeSourceDie_MissingMethods(t *testingx.T) {
+	die := ImageVolumeSourceBlank
+	ignore := []string{}
+	diff := testing.DieFieldDiff(die).Delete(ignore...)
+	if diff.Len() != 0 {
+		t.Errorf("found missing fields for ImageVolumeSourceDie: %s", diff.List())
 	}
 }
 

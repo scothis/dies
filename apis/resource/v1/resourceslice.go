@@ -17,6 +17,7 @@ limitations under the License.
 package v1
 
 import (
+	corev1 "k8s.io/api/core/v1"
 	resourcev1 "k8s.io/api/resource/v1"
 )
 
@@ -33,7 +34,7 @@ type _ = resourcev1.ResourceSliceSpec
 // +die
 type _ = resourcev1.ResourcePool
 
-// +die:ignore=Attributes;Capacity
+// +die:ignore=Attributes;Capacity;NodeAllocatableResourceMappings
 // +die:field:name=ConsumesCounters,die=DeviceCounterConsumptionDie,listType=atomic
 // +die:field:name=NodeSelector,package=_/core/v1,die=NodeSelectorDie,pointer=true
 // +die:field:name=Taints,die=DeviceTaintDie,listType=atomic
@@ -91,12 +92,55 @@ func (d *DeviceDie) CapacityDie(v resourcev1.QualifiedName, fn func(d *DeviceCap
 	})
 }
 
+// NodeAllocatableResourceMappings defines the mapping of node resources
+// that are managed by the DRA driver exposing this device. This includes resources currently
+// reported in v1.Node `status.allocatable` that are not extended resources
+// (see https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#extended-resources).
+// Examples include "cpu", "memory", "ephemeral-storage", and hugepages.
+// In addition to standard requests made through the Pod `spec`, these resources
+// can also be requested through claims and allocated by the DRA driver.
+// For example, a CPU DRA driver might allocate exclusive CPUs or auxiliary node memory
+// dependencies of an accelerator device.
+// The keys of this map are the node-allocatable resource names (e.g., "cpu", "memory").
+// Extended resource names are not permitted as keys.
+// +optional
+// +featureGate=DRANodeAllocatableResources
+func (d *DeviceDie) NodeAllocatableResourceMappings(v map[corev1.ResourceName]resourcev1.NodeAllocatableResourceMapping) *DeviceDie {
+	return d.DieStamp(func(r *resourcev1.Device) {
+		r.NodeAllocatableResourceMappings = v
+	})
+}
+
+// NodeAllocatableResourceMappings defines the mapping of node resources
+// that are managed by the DRA driver exposing this device. This includes resources currently
+// reported in v1.Node `status.allocatable` that are not extended resources
+// (see https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#extended-resources).
+// Examples include "cpu", "memory", "ephemeral-storage", and hugepages.
+// In addition to standard requests made through the Pod `spec`, these resources
+// can also be requested through claims and allocated by the DRA driver.
+// For example, a CPU DRA driver might allocate exclusive CPUs or auxiliary node memory
+// dependencies of an accelerator device.
+// The keys of this map are the node-allocatable resource names (e.g., "cpu", "memory").
+// Extended resource names are not permitted as keys.
+// +optional
+// +featureGate=DRANodeAllocatableResources
+func (d *DeviceDie) NodeAllocatableResourceMappingsDie(v corev1.ResourceName, fn func(d *NodeAllocatableResourceMappingDie)) *DeviceDie {
+	return d.DieStamp(func(r *resourcev1.Device) {
+		d := NodeAllocatableResourceMappingBlank.DieImmutable(false).DieFeed(r.NodeAllocatableResourceMappings[v])
+		fn(d)
+		r.NodeAllocatableResourceMappings[v] = d.DieRelease()
+	})
+}
+
 // +die
 type _ = resourcev1.DeviceAttribute
 
 // +die
 // +die:field:name=RequestPolicy,die=CapacityRequestPolicyDie,pointer=true
 type _ = resourcev1.DeviceCapacity
+
+// +die
+type _ = resourcev1.NodeAllocatableResourceMapping
 
 // +die
 // +die:field:name=ValidRange,die=CapacityRequestPolicyRangeDie,pointer=true
