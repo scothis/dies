@@ -720,8 +720,6 @@ func (d *DeviceClassSpecDie) Config(v ...resourcev1.DeviceClassConfiguration) *D
 // # If two classes are created at the same time, then the name of the class
 //
 // lexicographically sorted first is picked.
-//
-// This is a beta field.
 func (d *DeviceClassSpecDie) ExtendedResourceName(v *string) *DeviceClassSpecDie {
 	return d.DieStamp(func(r *resourcev1.DeviceClassSpec) {
 		r.ExtendedResourceName = v
@@ -1256,7 +1254,7 @@ func (d *CELDeviceSelectorDie) DiePatch(patchType types.PatchType) ([]byte, erro
 //
 // (e.g. device.attributes["dra.example.com"] evaluates to an object with all
 //
-// of the attributes which were prefixed by "dra.example.com".
+// of the attributes which were prefixed by "dra.example.com").
 //
 // - capacity (map[string]object): the device's capacities, grouped by prefix.
 //
@@ -1307,6 +1305,20 @@ func (d *CELDeviceSelectorDie) DiePatch(patchType types.PatchType) ([]byte, erro
 // # A robust expression should check for the existence of attributes
 //
 // before referencing them.
+//
+// Common errors:
+//
+// - "no such key": Use optional chaining (.? followed by orValue())
+//
+// or guarding the check with has() for optional fields.
+//
+// See CEL Optional Types for details:
+//
+// https://pkg.go.dev/github.com/google/cel-go@v0.17.4/cel#OptionalTypes
+//
+// For more CEL expression syntax and examples, see:
+//
+// https://kubernetes.io/docs/reference/using-api/cel/
 //
 // # For ease of use, the cel.bind() function is enabled, and can be used
 //

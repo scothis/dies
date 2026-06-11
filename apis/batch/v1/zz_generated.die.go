@@ -4141,10 +4141,6 @@ func (d *JobStatusDie) Failed(v int32) *JobStatusDie {
 // The number of pods which are terminating (in phase Pending or Running
 //
 // and have a deletionTimestamp).
-//
-// This field is beta-level. The job controller populates the field when
-//
-// the feature gate JobPodReplacementPolicy is enabled (enabled by default).
 func (d *JobStatusDie) Terminating(v *int32) *JobStatusDie {
 	return d.DieStamp(func(r *batchv1.JobStatus) {
 		r.Terminating = v

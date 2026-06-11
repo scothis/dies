@@ -4979,7 +4979,7 @@ func (d *MetricStatusDie) ResourceDie(fn func(d *ResourceMetricStatusDie)) *Metr
 
 // ContainerResourceDie mutates ContainerResource as a die.
 //
-// container resource refers to a resource metric (such as those specified in
+// containerResource refers to a resource metric (such as those specified in
 //
 // requests and limits) known to Kubernetes describing a single container in each pod in the
 //
@@ -5059,7 +5059,7 @@ func (d *MetricStatusDie) Resource(v *autoscalingv2.ResourceMetricStatus) *Metri
 	})
 }
 
-// container resource refers to a resource metric (such as those specified in
+// containerResource refers to a resource metric (such as those specified in
 //
 // requests and limits) known to Kubernetes describing a single container in each pod in the
 //
@@ -5359,7 +5359,7 @@ func (d *ObjectMetricStatusDie) CurrentDie(fn func(d *MetricValueStatusDie)) *Ob
 
 // DescribedObjectDie mutates DescribedObject as a die.
 //
-// DescribedObject specifies the descriptions of a object,such as kind,name apiVersion
+// describedObject specifies the descriptions of a object,such as kind,name apiVersion
 func (d *ObjectMetricStatusDie) DescribedObjectDie(fn func(d *CrossVersionObjectReferenceDie)) *ObjectMetricStatusDie {
 	return d.DieStamp(func(r *autoscalingv2.ObjectMetricStatus) {
 		d := CrossVersionObjectReferenceBlank.DieImmutable(false).DieFeed(r.DescribedObject)
@@ -5382,7 +5382,7 @@ func (d *ObjectMetricStatusDie) Current(v autoscalingv2.MetricValueStatus) *Obje
 	})
 }
 
-// DescribedObject specifies the descriptions of a object,such as kind,name apiVersion
+// describedObject specifies the descriptions of a object,such as kind,name apiVersion
 func (d *ObjectMetricStatusDie) DescribedObject(v autoscalingv2.CrossVersionObjectReference) *ObjectMetricStatusDie {
 	return d.DieStamp(func(r *autoscalingv2.ObjectMetricStatus) {
 		r.DescribedObject = v
@@ -5669,7 +5669,7 @@ func (d *MetricValueStatusDie) AverageValueString(s string) *MetricValueStatusDi
 	return d.AverageValue(&q)
 }
 
-// currentAverageUtilization is the current value of the average of the
+// averageUtilization is the current value of the average of the
 //
 // resource metric across all relevant pods, represented as a percentage of
 //

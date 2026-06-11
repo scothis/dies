@@ -6459,7 +6459,9 @@ func (d *ConfigMapKeySelectorDie) LocalObjectReference(v corev1.LocalObjectRefer
 	})
 }
 
-// The key to select.
+// The key to select from the ConfigMap's Data field.
+//
+// Keys in the BinaryData field are not currently propagated to container env vars.
 func (d *ConfigMapKeySelectorDie) Key(v string) *ConfigMapKeySelectorDie {
 	return d.DieStamp(func(r *corev1.ConfigMapKeySelector) {
 		r.Key = v
@@ -8787,9 +8789,7 @@ func (d *VolumeMountDie) RecursiveReadOnly(v *corev1.RecursiveReadOnlyMode) *Vol
 	})
 }
 
-// Path within the container at which the volume should be mounted.  Must
-//
-// not contain ':'.
+// Path within the container at which the volume should be mounted.
 func (d *VolumeMountDie) MountPath(v string) *VolumeMountDie {
 	return d.DieStamp(func(r *corev1.VolumeMount) {
 		r.MountPath = v
@@ -33320,9 +33320,9 @@ func (d *PersistentVolumeClaimSpecDie) ResourcesDie(fn func(d *VolumeResourceReq
 //
 // it will create a new volume based on the contents of the specified data source.
 //
-// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+// dataSource contents will be copied to dataSourceRef, and dataSourceRef contents will be
 //
-// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+// copied to dataSource when dataSourceRef.namespace is not specified.
 //
 // If the namespace is specified, then dataSourceRef will not be copied to dataSource.
 func (d *PersistentVolumeClaimSpecDie) DataSourceDie(fn func(d *TypedLocalObjectReferenceDie)) *PersistentVolumeClaimSpecDie {
@@ -33376,8 +33376,6 @@ func (d *PersistentVolumeClaimSpecDie) DataSourceDie(fn func(d *TypedLocalObject
 // * While dataSource only allows local objects, dataSourceRef allows objects
 //
 // in any namespaces.
-//
-// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
 //
 // (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 func (d *PersistentVolumeClaimSpecDie) DataSourceRefDie(fn func(d *TypedObjectReferenceDie)) *PersistentVolumeClaimSpecDie {
@@ -33454,9 +33452,9 @@ func (d *PersistentVolumeClaimSpecDie) VolumeMode(v *corev1.PersistentVolumeMode
 //
 // it will create a new volume based on the contents of the specified data source.
 //
-// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+// dataSource contents will be copied to dataSourceRef, and dataSourceRef contents will be
 //
-// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+// copied to dataSource when dataSourceRef.namespace is not specified.
 //
 // If the namespace is specified, then dataSourceRef will not be copied to dataSource.
 func (d *PersistentVolumeClaimSpecDie) DataSource(v *corev1.TypedLocalObjectReference) *PersistentVolumeClaimSpecDie {
@@ -33506,8 +33504,6 @@ func (d *PersistentVolumeClaimSpecDie) DataSource(v *corev1.TypedLocalObjectRefe
 // * While dataSource only allows local objects, dataSourceRef allows objects
 //
 // in any namespaces.
-//
-// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
 //
 // (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 func (d *PersistentVolumeClaimSpecDie) DataSourceRef(v *corev1.TypedObjectReference) *PersistentVolumeClaimSpecDie {
