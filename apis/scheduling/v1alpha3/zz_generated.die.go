@@ -676,8 +676,6 @@ func (d *PodGroupSpecDie) PodGroupTemplateRefDie(fn func(d *PodGroupTemplateRefe
 // SchedulingPolicy defines the scheduling policy for this instance of the PodGroup.
 //
 // Controllers are expected to fill this field by copying it from a PodGroupTemplate.
-//
-// This field is immutable.
 func (d *PodGroupSpecDie) SchedulingPolicyDie(fn func(d *PodGroupSchedulingPolicyDie)) *PodGroupSpecDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.PodGroupSpec) {
 		d := PodGroupSchedulingPolicyBlank.DieImmutable(false).DieFeed(r.SchedulingPolicy)
@@ -746,10 +744,6 @@ func (d *PodGroupSpecDie) ResourceClaimDie(v string, fn func(d *PodGroupResource
 // One of Single, All. Defaults to Single if unset.
 //
 // This field is immutable.
-//
-// # This field is available only when the WorkloadAwarePreemption feature gate
-//
-// is enabled.
 func (d *PodGroupSpecDie) DisruptionModeDie(fn func(d *DisruptionModeDie)) *PodGroupSpecDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.PodGroupSpec) {
 		d := DisruptionModeBlank.DieImmutable(false).DieFeedPtr(r.DisruptionMode)
@@ -770,8 +764,6 @@ func (d *PodGroupSpecDie) PodGroupTemplateRef(v *schedulingv1alpha3.PodGroupTemp
 // SchedulingPolicy defines the scheduling policy for this instance of the PodGroup.
 //
 // Controllers are expected to fill this field by copying it from a PodGroupTemplate.
-//
-// This field is immutable.
 func (d *PodGroupSpecDie) SchedulingPolicy(v schedulingv1alpha3.PodGroupSchedulingPolicy) *PodGroupSpecDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.PodGroupSpec) {
 		r.SchedulingPolicy = v
@@ -819,10 +811,6 @@ func (d *PodGroupSpecDie) ResourceClaims(v ...schedulingv1alpha3.PodGroupResourc
 // One of Single, All. Defaults to Single if unset.
 //
 // This field is immutable.
-//
-// # This field is available only when the WorkloadAwarePreemption feature gate
-//
-// is enabled.
 func (d *PodGroupSpecDie) DisruptionMode(v *schedulingv1alpha3.DisruptionMode) *PodGroupSpecDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.PodGroupSpec) {
 		r.DisruptionMode = v
@@ -840,10 +828,6 @@ func (d *PodGroupSpecDie) DisruptionMode(v *schedulingv1alpha3.DisruptionMode) *
 // priority class if it exists. Otherwise, the pod group's priority will be zero).
 //
 // This field is immutable.
-//
-// # This field is available only when the WorkloadAwarePreemption feature gate
-//
-// is enabled.
 func (d *PodGroupSpecDie) PriorityClassName(v string) *PodGroupSpecDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.PodGroupSpec) {
 		r.PriorityClassName = v
@@ -861,10 +845,6 @@ func (d *PodGroupSpecDie) PriorityClassName(v string) *PodGroupSpecDie {
 // The higher the value, the higher the priority.
 //
 // This field is immutable.
-//
-// # This field is available only when the WorkloadAwarePreemption feature gate
-//
-// is enabled.
 func (d *PodGroupSpecDie) Priority(v *int32) *PodGroupSpecDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.PodGroupSpec) {
 		r.Priority = v
@@ -1649,7 +1629,9 @@ func (d *PodGroupSchedulingPolicyDie) DiePatch(patchType types.PatchType) ([]byt
 //
 // # Basic specifies that the pods in this group should be scheduled using
 //
-// standard Kubernetes scheduling behavior.
+// standard Kubernetes scheduling behavior. Setting this field at group creation time
+//
+// opts this group to basic scheduling; this field cannot be changed afterward.
 func (d *PodGroupSchedulingPolicyDie) BasicDie(fn func(d *BasicSchedulingPolicyDie)) *PodGroupSchedulingPolicyDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.PodGroupSchedulingPolicy) {
 		d := BasicSchedulingPolicyBlank.DieImmutable(false).DieFeedPtr(r.Basic)
@@ -1662,7 +1644,11 @@ func (d *PodGroupSchedulingPolicyDie) BasicDie(fn func(d *BasicSchedulingPolicyD
 //
 // # Gang specifies that the pods in this group should be scheduled using
 //
-// all-or-nothing semantics.
+// all-or-nothing semantics. Setting this field at group creation time
+//
+// opts this group to gang scheduling; this field cannot be set or unset afterward.
+//
+// The minCount field within Gang scheduling policy remains mutable after group creation.
 func (d *PodGroupSchedulingPolicyDie) GangDie(fn func(d *GangSchedulingPolicyDie)) *PodGroupSchedulingPolicyDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.PodGroupSchedulingPolicy) {
 		d := GangSchedulingPolicyBlank.DieImmutable(false).DieFeedPtr(r.Gang)
@@ -1673,7 +1659,9 @@ func (d *PodGroupSchedulingPolicyDie) GangDie(fn func(d *GangSchedulingPolicyDie
 
 // Basic specifies that the pods in this group should be scheduled using
 //
-// standard Kubernetes scheduling behavior.
+// standard Kubernetes scheduling behavior. Setting this field at group creation time
+//
+// opts this group to basic scheduling; this field cannot be changed afterward.
 func (d *PodGroupSchedulingPolicyDie) Basic(v *schedulingv1alpha3.BasicSchedulingPolicy) *PodGroupSchedulingPolicyDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.PodGroupSchedulingPolicy) {
 		r.Basic = v
@@ -1682,7 +1670,11 @@ func (d *PodGroupSchedulingPolicyDie) Basic(v *schedulingv1alpha3.BasicSchedulin
 
 // Gang specifies that the pods in this group should be scheduled using
 //
-// all-or-nothing semantics.
+// all-or-nothing semantics. Setting this field at group creation time
+//
+// opts this group to gang scheduling; this field cannot be set or unset afterward.
+//
+// The minCount field within Gang scheduling policy remains mutable after group creation.
 func (d *PodGroupSchedulingPolicyDie) Gang(v *schedulingv1alpha3.GangSchedulingPolicy) *PodGroupSchedulingPolicyDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.PodGroupSchedulingPolicy) {
 		r.Gang = v
@@ -2185,7 +2177,21 @@ func (d *GangSchedulingPolicyDie) DiePatch(patchType types.PatchType) ([]byte, e
 //
 // at the same time for the scheduler to admit the entire group.
 //
-// It must be a positive integer.
+// It must be a positive integer. This field is mutable to support workload scaling.
+//
+// Note that the scheduler operates on an eventually consistent model. Updates
+//
+// to minCount may not be immediately reflected in scheduling decisions due to
+//
+// propagation delays. If minCount is updated while a scheduling cycle is in
+//
+// progress for that group, the new value may not take effect until the next
+//
+// cycle. Moreover, minCount is only enforced during scheduling, meaning that
+//
+// modifications to this field do not affect already-scheduled pods, applying
+//
+// only to those evaluated in future cycles.
 func (d *GangSchedulingPolicyDie) MinCount(v int32) *GangSchedulingPolicyDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.GangSchedulingPolicy) {
 		r.MinCount = v
@@ -4045,13 +4051,17 @@ func (d *PodGroupStatusDie) DiePatch(patchType types.PatchType) ([]byte, error) 
 //
 // Known condition types:
 //
-// - "PodGroupScheduled": Indicates whether the scheduling requirement has been satisfied.
+// - "PodGroupInitiallyScheduled": Indicates whether the scheduling requirement has been satisfied.
+//
+// Once this condition transitions to True, it serves as a terminal state and will never revert to False,
+//
+// even if pods are subsequently evicted and group constraints are no longer met.
 //
 // - "DisruptionTarget": Indicates whether the PodGroup is about to be terminated
 //
 // due to disruption such as preemption.
 //
-// Known reasons for the PodGroupScheduled condition:
+// Known reasons for the PodGroupInitiallyScheduled condition:
 //
 // - "Unschedulable": The PodGroup cannot be scheduled due to resource constraints,
 //
@@ -4107,13 +4117,17 @@ func (d *PodGroupStatusDie) ResourceClaimStatuseDie(v string, fn func(d *PodGrou
 //
 // Known condition types:
 //
-// - "PodGroupScheduled": Indicates whether the scheduling requirement has been satisfied.
+// - "PodGroupInitiallyScheduled": Indicates whether the scheduling requirement has been satisfied.
+//
+// Once this condition transitions to True, it serves as a terminal state and will never revert to False,
+//
+// even if pods are subsequently evicted and group constraints are no longer met.
 //
 // - "DisruptionTarget": Indicates whether the PodGroup is about to be terminated
 //
 // due to disruption such as preemption.
 //
-// Known reasons for the PodGroupScheduled condition:
+// Known reasons for the PodGroupInitiallyScheduled condition:
 //
 // - "Unschedulable": The PodGroup cannot be scheduled due to resource constraints,
 //
@@ -5035,7 +5049,9 @@ func (d *WorkloadSpecDie) ControllerRefDie(fn func(d *TypedLocalObjectReferenceD
 //
 // PodGroupTemplates is the list of templates that make up the Workload.
 //
-// The maximum number of templates is 8. This field is immutable.
+// The maximum number of templates is 8. Templates cannot be added or removed after the workload is created.
+//
+// Existing templates may still be updated where their individual fields allow it.
 func (d *WorkloadSpecDie) PodGroupTemplateDie(v string, fn func(d *PodGroupTemplateDie)) *WorkloadSpecDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.WorkloadSpec) {
 		for i := range r.PodGroupTemplates {
@@ -5068,7 +5084,9 @@ func (d *WorkloadSpecDie) ControllerRef(v *schedulingv1alpha3.TypedLocalObjectRe
 
 // PodGroupTemplates is the list of templates that make up the Workload.
 //
-// The maximum number of templates is 8. This field is immutable.
+// The maximum number of templates is 8. Templates cannot be added or removed after the workload is created.
+//
+// Existing templates may still be updated where their individual fields allow it.
 func (d *WorkloadSpecDie) PodGroupTemplates(v ...schedulingv1alpha3.PodGroupTemplate) *WorkloadSpecDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.WorkloadSpec) {
 		r.PodGroupTemplates = v
@@ -5614,6 +5632,8 @@ func (d *PodGroupTemplateDie) SchedulingPolicyDie(fn func(d *PodGroupSchedulingP
 // SchedulingConstraints defines optional scheduling constraints (e.g. topology) for this PodGroupTemplate.
 //
 // This field is only available when the TopologyAwareWorkloadScheduling feature gate is enabled.
+//
+// This field is immutable.
 func (d *PodGroupTemplateDie) SchedulingConstraintsDie(fn func(d *PodGroupSchedulingConstraintsDie)) *PodGroupTemplateDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.PodGroupTemplate) {
 		d := PodGroupSchedulingConstraintsBlank.DieImmutable(false).DieFeedPtr(r.SchedulingConstraints)
@@ -5662,9 +5682,7 @@ func (d *PodGroupTemplateDie) ResourceClaimDie(v string, fn func(d *PodGroupReso
 //
 // One of Single, All.
 //
-// # This field is available only when the WorkloadAwarePreemption feature gate
-//
-// is enabled.
+// This field is immutable.
 func (d *PodGroupTemplateDie) DisruptionModeDie(fn func(d *DisruptionModeDie)) *PodGroupTemplateDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.PodGroupTemplate) {
 		d := DisruptionModeBlank.DieImmutable(false).DieFeedPtr(r.DisruptionMode)
@@ -5692,6 +5710,8 @@ func (d *PodGroupTemplateDie) SchedulingPolicy(v schedulingv1alpha3.PodGroupSche
 // SchedulingConstraints defines optional scheduling constraints (e.g. topology) for this PodGroupTemplate.
 //
 // This field is only available when the TopologyAwareWorkloadScheduling feature gate is enabled.
+//
+// This field is immutable.
 func (d *PodGroupTemplateDie) SchedulingConstraints(v *schedulingv1alpha3.PodGroupSchedulingConstraints) *PodGroupTemplateDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.PodGroupTemplate) {
 		r.SchedulingConstraints = v
@@ -5723,9 +5743,7 @@ func (d *PodGroupTemplateDie) ResourceClaims(v ...schedulingv1alpha3.PodGroupRes
 //
 // One of Single, All.
 //
-// # This field is available only when the WorkloadAwarePreemption feature gate
-//
-// is enabled.
+// This field is immutable.
 func (d *PodGroupTemplateDie) DisruptionMode(v *schedulingv1alpha3.DisruptionMode) *PodGroupTemplateDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.PodGroupTemplate) {
 		r.DisruptionMode = v
@@ -5734,15 +5752,9 @@ func (d *PodGroupTemplateDie) DisruptionMode(v *schedulingv1alpha3.DisruptionMod
 
 // PriorityClassName indicates the priority that should be considered when scheduling
 //
-// a pod group created from this template. If no priority class is specified, admission
+// a pod group created from this template.
 //
-// control can set this to the global default priority class if it exists. Otherwise,
-//
-// pod groups created from this template will have the priority set to zero.
-//
-// # This field is available only when the WorkloadAwarePreemption feature gate
-//
-// is enabled.
+// This field is immutable.
 func (d *PodGroupTemplateDie) PriorityClassName(v string) *PodGroupTemplateDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.PodGroupTemplate) {
 		r.PriorityClassName = v
@@ -5751,17 +5763,11 @@ func (d *PodGroupTemplateDie) PriorityClassName(v string) *PodGroupTemplateDie {
 
 // Priority is the value of priority of pod groups created from this template. Various
 //
-// system components use this field to find the priority of the pod group. When
-//
-// Priority Admission Controller is enabled, it prevents users from setting this field.
-//
-// The admission controller populates this field from PriorityClassName.
+// system components use this field to find the priority of the pod group.
 //
 // The higher the value, the higher the priority.
 //
-// # This field is available only when the WorkloadAwarePreemption feature gate
-//
-// is enabled.
+// This field is immutable.
 func (d *PodGroupTemplateDie) Priority(v *int32) *PodGroupTemplateDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.PodGroupTemplate) {
 		r.Priority = v
