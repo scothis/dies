@@ -4853,7 +4853,9 @@ func (d *WorkloadSpecDie) PodGroupTemplateDie(v string, fn func(d *PodGroupTempl
 //
 // compositePodGroupTemplates is the list of CompositePodGroup templates that make up the Workload.
 //
-// The maximum number of templates is 8. This field is immutable.
+// The maximum number of templates is 8. Templates cannot be added or removed after the workload is created.
+//
+// Existing templates may still be updated where their individual fields allow it.
 //
 // Exactly one of CompositePodGroupTemplates and PodGroupTemplates must be set.
 //
@@ -4903,7 +4905,9 @@ func (d *WorkloadSpecDie) PodGroupTemplates(v ...schedulingv1alpha3.PodGroupTemp
 
 // compositePodGroupTemplates is the list of CompositePodGroup templates that make up the Workload.
 //
-// The maximum number of templates is 8. This field is immutable.
+// The maximum number of templates is 8. Templates cannot be added or removed after the workload is created.
+//
+// Existing templates may still be updated where their individual fields allow it.
 //
 // Exactly one of CompositePodGroupTemplates and PodGroupTemplates must be set.
 //
@@ -6248,7 +6252,7 @@ func (d *CompositePodGroupSchedulingPolicyDie) DiePatch(patchType types.PatchTyp
 //
 // basic specifies that the groups of this composite group should be scheduled independently.
 //
-// This field is immutable.
+// Setting this field at group creation time opts this group to basic scheduling; this field cannot be changed afterward.
 func (d *CompositePodGroupSchedulingPolicyDie) BasicDie(fn func(d *CompositeBasicSchedulingPolicyDie)) *CompositePodGroupSchedulingPolicyDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.CompositePodGroupSchedulingPolicy) {
 		d := CompositeBasicSchedulingPolicyBlank.DieImmutable(false).DieFeedPtr(r.Basic)
@@ -6261,7 +6265,11 @@ func (d *CompositePodGroupSchedulingPolicyDie) BasicDie(fn func(d *CompositeBasi
 //
 // gang specifies that the groups of this composite group should be scheduled using
 //
-// all-or-nothing semantics.
+// all-or-nothing semantics. Setting this field at group creation time
+//
+// opts this group to gang scheduling; this field cannot be set or unset afterward.
+//
+// The minGroupCount field within Gang scheduling policy remains mutable after group creation.
 func (d *CompositePodGroupSchedulingPolicyDie) GangDie(fn func(d *CompositeGangSchedulingPolicyDie)) *CompositePodGroupSchedulingPolicyDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.CompositePodGroupSchedulingPolicy) {
 		d := CompositeGangSchedulingPolicyBlank.DieImmutable(false).DieFeedPtr(r.Gang)
@@ -6272,7 +6280,7 @@ func (d *CompositePodGroupSchedulingPolicyDie) GangDie(fn func(d *CompositeGangS
 
 // basic specifies that the groups of this composite group should be scheduled independently.
 //
-// This field is immutable.
+// Setting this field at group creation time opts this group to basic scheduling; this field cannot be changed afterward.
 func (d *CompositePodGroupSchedulingPolicyDie) Basic(v *schedulingv1alpha3.CompositeBasicSchedulingPolicy) *CompositePodGroupSchedulingPolicyDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.CompositePodGroupSchedulingPolicy) {
 		r.Basic = v
@@ -6281,7 +6289,11 @@ func (d *CompositePodGroupSchedulingPolicyDie) Basic(v *schedulingv1alpha3.Compo
 
 // gang specifies that the groups of this composite group should be scheduled using
 //
-// all-or-nothing semantics.
+// all-or-nothing semantics. Setting this field at group creation time
+//
+// opts this group to gang scheduling; this field cannot be set or unset afterward.
+//
+// The minGroupCount field within Gang scheduling policy remains mutable after group creation.
 func (d *CompositePodGroupSchedulingPolicyDie) Gang(v *schedulingv1alpha3.CompositeGangSchedulingPolicy) *CompositePodGroupSchedulingPolicyDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.CompositePodGroupSchedulingPolicy) {
 		r.Gang = v
@@ -6784,7 +6796,21 @@ func (d *CompositeGangSchedulingPolicyDie) DiePatch(patchType types.PatchType) (
 //
 // or scheduled at the same time for the scheduler to admit the entire group.
 //
-// It must be a positive integer.
+// It must be a positive integer. This field is mutable to support workload scaling.
+//
+// Note that the scheduler operates on an eventually consistent model. Updates
+//
+// to minGroupCount may not be immediately reflected in scheduling decisions due to
+//
+// propagation delays. If minGroupCount is updated while a scheduling cycle is in
+//
+// progress for that group, the new value may not take effect until the next
+//
+// cycle. Moreover, minGroupCount is only enforced during scheduling, meaning that
+//
+// modifications to this field do not affect already-scheduled pods, applying
+//
+// only to those evaluated in future cycles.
 func (d *CompositeGangSchedulingPolicyDie) MinGroupCount(v int32) *CompositeGangSchedulingPolicyDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.CompositeGangSchedulingPolicy) {
 		r.MinGroupCount = v

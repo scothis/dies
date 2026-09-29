@@ -4050,7 +4050,7 @@ func (d *SubjectAccessReviewStatusDie) DiePatch(patchType types.PatchType) ([]by
 	return patch.Create(d.seal, d.r, patchType)
 }
 
-// allowed is required. True if the action would be allowed, false otherwise.
+// allowed is set to true if the action is allowed, and should be set to false otherwise.
 func (d *SubjectAccessReviewStatusDie) Allowed(v bool) *SubjectAccessReviewStatusDie {
 	return d.DieStamp(func(r *authorizationv1.SubjectAccessReviewStatus) {
 		r.Allowed = v
