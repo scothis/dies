@@ -3841,6 +3841,8 @@ func (d *PodGroupStatusDie) DiePatch(patchType types.PatchType) ([]byte, error) 
 //
 // Known reasons for the PodGroupInitiallyScheduled condition:
 //
+// - "Scheduled": All required pods in the PodGroup have been successfully scheduled.
+//
 // - "Unschedulable": The PodGroup cannot be scheduled due to resource constraints,
 //
 // affinity/anti-affinity rules, or insufficient capacity for the gang.
@@ -3849,11 +3851,15 @@ func (d *PodGroupStatusDie) DiePatch(patchType types.PatchType) ([]byte, error) 
 //
 // that happened during scheduling, for example due to nodeAffinity parsing errors.
 //
+// - "PodGroupError": The PodGroup cannot be scheduled due to an invalid group configuration
+//
+// detected during runtime validation (such as conflicting scheduler names, or priority/preemption policy conflicts).
+//
 // Known reasons for the DisruptionTarget condition:
 //
 // - "PreemptionByScheduler": The PodGroup was preempted by the scheduler to make room for
 //
-// higher-priority PodGroups or Pods.
+// higher-priority CompositePodGroups, PodGroups or Pods.
 func (d *PodGroupStatusDie) ConditionDie(v string, fn func(d *v1.ConditionDie)) *PodGroupStatusDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.PodGroupStatus) {
 		for i := range r.Conditions {
@@ -3907,6 +3913,8 @@ func (d *PodGroupStatusDie) ResourceClaimStatuseDie(v string, fn func(d *PodGrou
 //
 // Known reasons for the PodGroupInitiallyScheduled condition:
 //
+// - "Scheduled": All required pods in the PodGroup have been successfully scheduled.
+//
 // - "Unschedulable": The PodGroup cannot be scheduled due to resource constraints,
 //
 // affinity/anti-affinity rules, or insufficient capacity for the gang.
@@ -3915,11 +3923,15 @@ func (d *PodGroupStatusDie) ResourceClaimStatuseDie(v string, fn func(d *PodGrou
 //
 // that happened during scheduling, for example due to nodeAffinity parsing errors.
 //
+// - "PodGroupError": The PodGroup cannot be scheduled due to an invalid group configuration
+//
+// detected during runtime validation (such as conflicting scheduler names, or priority/preemption policy conflicts).
+//
 // Known reasons for the DisruptionTarget condition:
 //
 // - "PreemptionByScheduler": The PodGroup was preempted by the scheduler to make room for
 //
-// higher-priority PodGroups or Pods.
+// higher-priority CompositePodGroups, PodGroups or Pods.
 func (d *PodGroupStatusDie) Conditions(v ...metav1.Condition) *PodGroupStatusDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.PodGroupStatus) {
 		r.Conditions = v

@@ -157,6 +157,7 @@ github.com/onsi/ginkgo/v2 v2.25.3/go.mod h1:43uiyQC4Ed2tkOzLsEYm7hnrb7UJTWHYNsuy
 github.com/onsi/gomega v1.33.1/go.mod h1:U4R44UsT+9eLIaYRB2a5qajjtQYn0hauxvRm16AVYg0=
 github.com/onsi/gomega v1.34.2/go.mod h1:v1xfxRgk0KIsG+QOdm7p8UosrOzPYRo60fd3B/1Dukc=
 github.com/peterbourgon/diskv v2.0.1+incompatible/go.mod h1:uqqh8zWWbv1HBMNONnaR/tNboyR3/BZd58JJSHlUSCU=
+github.com/peterbourgon/diskv/v3 v3.0.1/go.mod h1:kJ5Ny7vLdARGU3WUuy6uzO6T0nb/2gWcT1JiBvRmb5o=
 github.com/pkg/diff v0.0.0-20210226163009-20ebb0f2a09e/go.mod h1:pJLUxLENpZxwdsKMEsNbx1VGcRFpLqf3715MtcvvzbA=
 github.com/prometheus/client_golang v1.16.0/go.mod h1:Zsulrv/L9oM40tJ7T815tM89lFEugiJ9HzIqaAx4LKc=
 github.com/prometheus/client_golang v1.19.1/go.mod h1:mP78NwGzrVks5S2H6ab8+ZZGJLZUq1hoULYBAYBw1Ho=
@@ -312,6 +313,7 @@ go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.64.0/go.mod h1:
 go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.65.0/go.mod h1:c7hN3ddxs/z6q9xwvfLPk+UHlWRQyaeR1LdgfL/66l0=
 go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.68.0/go.mod h1:BuhAPThV8PBHBvg8ZzZ/Ok3idOdhWIodywz2xEcRbJo=
 go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.69.0/go.mod h1:z9+yiacE0IHRqM4qFfkbt/JYlmYXgss8GY/jXoNuPJI=
+go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.71.0/go.mod h1:Ef8SuTh59BT7+ofpDxN9z+yOlc4t2GjLmKDgYNJL/NU=
 go.opentelemetry.io/otel v1.19.0/go.mod h1:i0QyjOq3UPoTzff0PJB2N66fb4S0+rSbSB15/oyH9fY=
 go.opentelemetry.io/otel v1.28.0/go.mod h1:q68ijF8Fc8CnMHKyzqL6akLO46ePnjkgfIMIjUIX9z4=
 go.opentelemetry.io/otel v1.33.0/go.mod h1:SUUkR6csvUQl+yjReHu5uM3EtVV7MBm5FHKRlNx4I8I=
@@ -330,6 +332,7 @@ go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.39.0/go.mod h1:vnakAaFckOMi
 go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.40.0/go.mod h1:bTdK1nhqF76qiPoCCdyFIV+N/sRHYXYCTQc+3VCi3MI=
 go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.44.0/go.mod h1:+wnlSn0mD1ADVMe3v9Z/WIaiz6q6gL2J/ejaAmdmv80=
 go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.45.0/go.mod h1:Tiz03lTBVBrm7eWZBOidzEaYaJa8tjwGUGv6d8mlTyk=
+go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.46.0/go.mod h1:716wFneO0ov19A2beH5hjfh9AK5z/VWNAtDijp1Y0/g=
 go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.19.0/go.mod h1:0+KuTDyKL4gjKCF75pHOX4wuzYDUZYfAQdSu43o+Z2I=
 go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.27.0/go.mod h1:MOiCmryaYtc+V0Ei+Tx9o5S1ZjA7kzLucuVuyzBZloQ=
 go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.33.0/go.mod h1:57gTHJSE5S1tqg+EKsLPlTWhpHMsWlVmer+LA926XiA=
@@ -579,6 +582,7 @@ k8s.io/apiserver v0.37.0-rc.0/go.mod h1:i8FQUZlpCjeUKjxr0hwQmi+e35uoKY5f46V62kbO
 k8s.io/apiserver v0.37.0-rc.1/go.mod h1:6QXD13HjrQj7O2EnESZk+6Et2p6j8FkBNRoj2fVjPmM=
 k8s.io/apiserver v0.38.0-alpha.0/go.mod h1:/auJ/xIOF2yz2YZDoOwP1vwbfyc+xgk8QOmH1uk0sZA=
 k8s.io/apiserver v0.38.0-alpha.1/go.mod h1:/EfImbGL6wh4/Hbyb2nHNz//1uLbPh3CXe5z1fgkpCw=
+k8s.io/apiserver v0.38.0-alpha.2/go.mod h1:BZ9esmGphQdqBqoS4ROln4UMwmmfSTWx3mEavzjMZ8g=
 k8s.io/code-generator v0.29.0/go.mod h1:5bqIZoCxs2zTRKMWNYqyQWW/bajc+ah4rh0tMY8zdGA=
 k8s.io/code-generator v0.30.0/go.mod h1:mBMZhfRR4IunJUh2+7LVmdcWwpouCH5+LNPkZ3t/v7Q=
 k8s.io/code-generator v0.31.0/go.mod h1:84y4w3es8rOJOUUP1rLsIiGlO1JuEaPFXQPA9e/K6U0=
@@ -600,6 +604,7 @@ k8s.io/code-generator v0.37.0-rc.0/go.mod h1:gwljmdmKalNet8U3+3tu8dyV0+etqGStU2u
 k8s.io/code-generator v0.37.0-rc.1/go.mod h1:Mugh4hfnnt6TFDxfw8jnR+1+0BaVPXyXFXt7OU16SwM=
 k8s.io/code-generator v0.38.0-alpha.0/go.mod h1:4dTgIeL0Hrsjik5WO6bkIjPRudQXkiSrh+egNDiOoJI=
 k8s.io/code-generator v0.38.0-alpha.1/go.mod h1:V0Lvt5Y1xda8MhwQ9gzQwe/dZvJD07O0V8fDJHU0SEw=
+k8s.io/code-generator v0.38.0-alpha.2/go.mod h1:/yF8SFNr0jEiIBxggYI65YWpNO1XpuLViMAeAUG0ABA=
 k8s.io/component-base v0.29.0/go.mod h1:sADonFTQ9Zc9yFLghpDpmNXEdHyQmFIGbiuZbqAXQ1M=
 k8s.io/component-base v0.30.0/go.mod h1:V9x/0ePFNaKeKYA3bOvIbrNoluTSG+fSJKjLdjOoeXQ=
 k8s.io/component-base v0.31.0/go.mod h1:TYVuzI1QmN4L5ItVdMSXKvH7/DtvIuas5/mm8YT3rTo=
@@ -621,6 +626,7 @@ k8s.io/component-base v0.37.0-rc.0/go.mod h1:tQPSVM0ca9MGk8J+3+XlOwClT/8+yVpwtuw
 k8s.io/component-base v0.37.0-rc.1/go.mod h1:jdqHCZ7rT/OTYSpol3oaibSY7EIdcndlm5yyMScJZss=
 k8s.io/component-base v0.38.0-alpha.0/go.mod h1:oiYa7tYd2tJlvtZhx3BtnGme/3ethSwj6T+0bRQCISU=
 k8s.io/component-base v0.38.0-alpha.1/go.mod h1:eJEokfk3iaAOkOqn4RaylyVQWiirPP1nhdOsDmRRcrc=
+k8s.io/component-base v0.38.0-alpha.2/go.mod h1:gI1YyPDp+gDXEVlVXIudRydpsbIuzAozijSp2yIITYk=
 k8s.io/gengo v0.0.0-20230829151522-9cce18d56c01/go.mod h1:FiNAH4ZV3gBg2Kwh89tzAEV2be7d5xI0vBa/VySYy3E=
 k8s.io/gengo/v2 v2.0.0-20240228010128-51d4e06bde70/go.mod h1:VH3AT8AaQOqiGjMF9p0/IM1Dj+82ZwjfxUP1IxaHE+8=
 k8s.io/gengo/v2 v2.0.0-20240826214909-a7b603a56eb7/go.mod h1:EJykeLsmFC60UQbYJezXkEsG2FLrt0GPNkU5iK5GWxU=
@@ -653,6 +659,8 @@ k8s.io/kms v0.37.0-rc.0/go.mod h1:0U6zfwLkfJr9O/jLgz2GARnKLh2uIhkq2EeaU66J5ow=
 k8s.io/kms v0.37.0-rc.1/go.mod h1:0U6zfwLkfJr9O/jLgz2GARnKLh2uIhkq2EeaU66J5ow=
 k8s.io/kms v0.38.0-alpha.0/go.mod h1:0U6zfwLkfJr9O/jLgz2GARnKLh2uIhkq2EeaU66J5ow=
 k8s.io/kms v0.38.0-alpha.1/go.mod h1:KaPAK0njyIOfiYFgVsb55pJ+vrnJM+NlwB3mEa/W9gQ=
+k8s.io/kms v0.38.0-alpha.2/go.mod h1:KaPAK0njyIOfiYFgVsb55pJ+vrnJM+NlwB3mEa/W9gQ=
+k8s.io/ktesting v0.38.0-alpha.2/go.mod h1:036KoTm7rXKov4beWNgVSnRSrsFJw3+TcDpva3UtkLI=
 k8s.io/kube-openapi v0.0.0-20231010175941-2dd684a91f00/go.mod h1:AsvuZPBlUDVuCdzJ87iajxtXuR9oktsTctW/R9wwouA=
 k8s.io/streaming v0.36.0-beta.0/go.mod h1:5Zm1U2Duu3uu1nG/ijKuwNWDkQk24aXVpScAhzRkzkk=
 k8s.io/streaming v0.36.0-rc.0/go.mod h1:5Zm1U2Duu3uu1nG/ijKuwNWDkQk24aXVpScAhzRkzkk=
@@ -668,6 +676,7 @@ k8s.io/streaming v0.37.0-rc.1/go.mod h1:APlJR26ZWRcVy5bIEj0QRrKUXROtBHPcxl2NT7EA
 k8s.io/streaming v0.37.0/go.mod h1:APlJR26ZWRcVy5bIEj0QRrKUXROtBHPcxl2NT7EAzPU=
 k8s.io/streaming v0.38.0-alpha.0/go.mod h1:APlJR26ZWRcVy5bIEj0QRrKUXROtBHPcxl2NT7EAzPU=
 k8s.io/streaming v0.38.0-alpha.1/go.mod h1:/BdUXd+cqjN5ou4J3e+8iGombgzDuZFTJNxhQ2g4zn0=
+k8s.io/streaming v0.38.0-alpha.2/go.mod h1:/BdUXd+cqjN5ou4J3e+8iGombgzDuZFTJNxhQ2g4zn0=
 k8s.io/utils v0.0.0-20240711033017-18e509b52bc8/go.mod h1:OLgZIPagt7ERELqWJFomSt595RzquPNLL48iOWgYOg0=
 k8s.io/utils v0.0.0-20260108192941-914a6e750570/go.mod h1:xDxuJ0whA3d0I4mf/C4ppKHxXynQ+fxnkmQH0vTHnuk=
 sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.28.0/go.mod h1:VHVDI/KrK4fjnV61bE2g3sA7tiETLn8sooImelsCx3Y=

@@ -12036,6 +12036,14 @@ func (d *NodeAllocatableMappingDie) DiePatch(patchType types.PatchType) ([]byte,
 // node allocatable resource mapping will be "4Gi".
 //
 // The final node allocatable resource amount is `consumedCapacity[capacityKey]` * `capacityMultiplier`.
+//
+// In this example, "dra.example.com/memory" is a fictional standardized capacity name.
+//
+// For driver-specific capacities the driver name can be omitted.
+//
+// # As defined for consumedCapacity, the capacity consumption may be recorded
+//
+// there with or without the driver name.
 func (d *NodeAllocatableMappingDie) CapacityKey(v *resourcev1.QualifiedName) *NodeAllocatableMappingDie {
 	return d.DieStamp(func(r *resourcev1.NodeAllocatableMapping) {
 		r.CapacityKey = v
