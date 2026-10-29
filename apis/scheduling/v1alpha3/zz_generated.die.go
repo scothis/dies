@@ -2497,6 +2497,10 @@ func (d *TopologyConstraintDie) DiePatch(patchType types.PatchType) ([]byte, err
 //
 // Different PodGroups can land on different domain instances even if they derive from the same PodGroupTemplate.
 //
+// Nodes where this label is missing or has an empty value do not belong to any domain instance,
+//
+// so pods within the PodGroup cannot be scheduled onto them.
+//
 // Examples: "topology.kubernetes.io/rack"
 func (d *TopologyConstraintDie) Key(v string) *TopologyConstraintDie {
 	return d.DieStamp(func(r *schedulingv1alpha3.TopologyConstraint) {

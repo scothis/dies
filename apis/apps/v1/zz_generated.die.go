@@ -6401,7 +6401,7 @@ func (d *RollingUpdateStatefulSetStrategyDie) Partition(v *int32) *RollingUpdate
 //
 // Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).
 //
-// Absolute number is calculated from percentage by rounding up. This can not be 0.
+// Absolute number is calculated from percentage by rounding down. This can not be 0.
 //
 // Defaults to 1. This field is beta-level and is enabled by default. The field applies to all pods in the range 0 to
 //
@@ -6422,7 +6422,7 @@ func (d *RollingUpdateStatefulSetStrategyDie) MaxUnavailable(v *intstr.IntOrStri
 //
 // Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).
 //
-// Absolute number is calculated from percentage by rounding up. This can not be 0.
+// Absolute number is calculated from percentage by rounding down. This can not be 0.
 //
 // Defaults to 1. This field is beta-level and is enabled by default. The field applies to all pods in the range 0 to
 //
@@ -6444,7 +6444,7 @@ func (d *RollingUpdateStatefulSetStrategyDie) MaxUnavailableInt(i int) *RollingU
 //
 // Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).
 //
-// Absolute number is calculated from percentage by rounding up. This can not be 0.
+// Absolute number is calculated from percentage by rounding down. This can not be 0.
 //
 // Defaults to 1. This field is beta-level and is enabled by default. The field applies to all pods in the range 0 to
 //

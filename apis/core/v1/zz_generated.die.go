@@ -7332,7 +7332,15 @@ func (d *ResourceRequirementsDie) ClaimDie(v string, fn func(d *ResourceClaimDie
 
 // limits describes the maximum amount of compute resources allowed.
 //
-// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+// For kubelet cgroup enforcement:
+//
+// - cpu and memory: a limit of 0 is treated the same as an unspecified limit. If
+//
+// neither the container nor the pod specifies a limit, the resource is not limited.
+//
+// - hugepages: an unspecified limit is treated the same as a limit of 0.
+//
+// More details: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 func (d *ResourceRequirementsDie) Limits(v corev1.ResourceList) *ResourceRequirementsDie {
 	return d.DieStamp(func(r *corev1.ResourceRequirements) {
 		r.Limits = v
@@ -7343,7 +7351,15 @@ func (d *ResourceRequirementsDie) Limits(v corev1.ResourceList) *ResourceRequire
 //
 // limits describes the maximum amount of compute resources allowed.
 //
-// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+// For kubelet cgroup enforcement:
+//
+// - cpu and memory: a limit of 0 is treated the same as an unspecified limit. If
+//
+// neither the container nor the pod specifies a limit, the resource is not limited.
+//
+// - hugepages: an unspecified limit is treated the same as a limit of 0.
+//
+// More details: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 func (d *ResourceRequirementsDie) AddLimit(name corev1.ResourceName, quantity resource.Quantity) *ResourceRequirementsDie {
 	return d.DieStamp(func(r *corev1.ResourceRequirements) {
 		if r.Limits == nil {
@@ -7357,7 +7373,15 @@ func (d *ResourceRequirementsDie) AddLimit(name corev1.ResourceName, quantity re
 //
 // limits describes the maximum amount of compute resources allowed.
 //
-// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+// For kubelet cgroup enforcement:
+//
+// - cpu and memory: a limit of 0 is treated the same as an unspecified limit. If
+//
+// neither the container nor the pod specifies a limit, the resource is not limited.
+//
+// - hugepages: an unspecified limit is treated the same as a limit of 0.
+//
+// More details: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 func (d *ResourceRequirementsDie) AddLimitString(name corev1.ResourceName, quantity string) *ResourceRequirementsDie {
 	q := resource.MustParse(quantity)
 	return d.AddLimit(name, q)
@@ -36785,11 +36809,17 @@ func (d *PodSpecDie) ResourceClaimsDie(v ...*PodResourceClaimDie) *PodSpecDie {
 //
 // entire pod, allowing resource sharing among containers in a pod.
 //
-// TODO: For beta graduation, expand this comment with a detailed explanation.
+// # If a limit is not specified at the pod level, the pod is limited by the aggregate of
 //
-// # This is an alpha field and requires enabling the PodLevelResources feature
+// its container limits:
 //
-// gate.
+// - For cpu and memory, the aggregate is used only if every init and regular container
+//
+// specifies a limit; otherwise the pod is not limited for that resource.
+//
+// - For hugepages, the container limits are summed and unspecified values are treated as 0.
+//
+// More details: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 func (d *PodSpecDie) ResourcesDie(fn func(d *ResourceRequirementsDie)) *PodSpecDie {
 	return d.DieStamp(func(r *corev1.PodSpec) {
 		d := ResourceRequirementsBlank.DieImmutable(false).DieFeedPtr(r.Resources)
@@ -36818,11 +36848,15 @@ func (d *PodSpecDie) ResourcesDie(fn func(d *ResourceRequirementsDie)) *PodSpecD
 //
 // Pod is created.
 //
-// # This field is immutable, but a group object with the same name may be
+// This field is immutable. The scheduler cannot distinguish PodGroup runtime
 //
-// recreated with different policies. Doing this during pod scheduling
+// instances that reuse the same namespace and name. Controllers should use a
 //
-// may result in the placement not conforming to the expected policies.
+// new PodGroup name for each runtime instance. Reusing a name for a PodGroup
+//
+// with different policies may result in Pod placement not conforming to the
+//
+// expected policies.
 func (d *PodSpecDie) SchedulingGroupDie(fn func(d *PodSchedulingGroupDie)) *PodSpecDie {
 	return d.DieStamp(func(r *corev1.PodSpec) {
 		d := PodSchedulingGroupBlank.DieImmutable(false).DieFeedPtr(r.SchedulingGroup)
@@ -37484,11 +37518,17 @@ func (d *PodSpecDie) ResourceClaims(v ...corev1.PodResourceClaim) *PodSpecDie {
 //
 // entire pod, allowing resource sharing among containers in a pod.
 //
-// TODO: For beta graduation, expand this comment with a detailed explanation.
+// # If a limit is not specified at the pod level, the pod is limited by the aggregate of
 //
-// # This is an alpha field and requires enabling the PodLevelResources feature
+// its container limits:
 //
-// gate.
+// - For cpu and memory, the aggregate is used only if every init and regular container
+//
+// specifies a limit; otherwise the pod is not limited for that resource.
+//
+// - For hugepages, the container limits are summed and unspecified values are treated as 0.
+//
+// More details: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 func (d *PodSpecDie) Resources(v *corev1.ResourceRequirements) *PodSpecDie {
 	return d.DieStamp(func(r *corev1.PodSpec) {
 		r.Resources = v
@@ -37534,11 +37574,15 @@ func (d *PodSpecDie) HostnameOverride(v *string) *PodSpecDie {
 //
 // Pod is created.
 //
-// # This field is immutable, but a group object with the same name may be
+// This field is immutable. The scheduler cannot distinguish PodGroup runtime
 //
-// recreated with different policies. Doing this during pod scheduling
+// instances that reuse the same namespace and name. Controllers should use a
 //
-// may result in the placement not conforming to the expected policies.
+// new PodGroup name for each runtime instance. Reusing a name for a PodGroup
+//
+// with different policies may result in Pod placement not conforming to the
+//
+// expected policies.
 func (d *PodSpecDie) SchedulingGroup(v *corev1.PodSchedulingGroup) *PodSpecDie {
 	return d.DieStamp(func(r *corev1.PodSpec) {
 		r.SchedulingGroup = v
